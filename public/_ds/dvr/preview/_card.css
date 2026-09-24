@@ -1,0 +1,45 @@
+/* ============================================================================
+   Shared preview-card chrome — keeps cards small, padded, framed lightly.
+   Used by every file in preview/.
+   ============================================================================ */
+@import url("../colors_and_type.css");
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  background: #FFFFFF;
+  color: var(--fg-primary);
+  font-family: var(--font-sans);
+}
+
+body {
+  padding: 24px;
+  min-height: 100vh;
+}
+
+/* container that all cards use */
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.row.tight { gap: 6px; }
+.col { display: flex; flex-direction: column; gap: 12px; }
+
+.label {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg-secondary);
+  font-weight: 500;
+}
+
+.mono-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-secondary);
+  letter-spacing: 0;
+  text-transform: none;
+}

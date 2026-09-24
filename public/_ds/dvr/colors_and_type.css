@@ -1,0 +1,363 @@
+/* ============================================================================
+   Dynamics VR — Design Tokens (Colors + Type)
+   Source: Figma "REBRANDING 2025 WEBAPP" – Variables Guide, 2. COLORES, 3. TIPOGRAFIA
+   Last updated: May 2026
+   ============================================================================ */
+
+/* ── Webfonts ──────────────────────────────────────────────────────────────── */
+/* DM Sans — uploaded TTFs (default optical-size variant) */
+@font-face { font-family: "DM Sans"; font-style: normal; font-weight: 100; font-display: swap;
+  src: url("fonts/DMSans-Thin.ttf") format("truetype"); }
+@font-face { font-family: "DM Sans"; font-style: italic; font-weight: 100; font-display: swap;
+  src: url("fonts/DMSans-ThinItalic.ttf") format("truetype"); }
+@font-face { font-family: "DM Sans"; font-style: normal; font-weight: 200; font-display: swap;
+  src: url("fonts/DMSans-ExtraLight.ttf") format("truetype"); }
+@font-face { font-family: "DM Sans"; font-style: italic; font-weight: 200; font-display: swap;
+  src: url("fonts/DMSans-ExtraLightItalic.ttf") format("truetype"); }
+@font-face { font-family: "DM Sans"; font-style: normal; font-weight: 300; font-display: swap;
+  src: url("fonts/DMSans-Light.ttf") format("truetype"); }
+@font-face { font-family: "DM Sans"; font-style: italic; font-weight: 300; font-display: swap;
+  src: url("fonts/DMSans-LightItalic.ttf") format("truetype"); }
+@font-face { font-family: "DM Sans"; font-style: normal; font-weight: 400; font-display: swap;
+  src: url("fonts/DMSans-Regular.ttf") format("truetype"); }
+@font-face { font-family: "DM Sans"; font-style: italic; font-weight: 400; font-display: swap;
+  src: url("fonts/DMSans-Italic.ttf") format("truetype"); }
+@font-face { font-family: "DM Sans"; font-style: normal; font-weight: 500; font-display: swap;
+  src: url("fonts/DMSans-Medium.ttf") format("truetype"); }
+@font-face { font-family: "DM Sans"; font-style: italic; font-weight: 500; font-display: swap;
+  src: url("fonts/DMSans-MediumItalic.ttf") format("truetype"); }
+@font-face { font-family: "DM Sans"; font-style: normal; font-weight: 600; font-display: swap;
+  src: url("fonts/DMSans-SemiBold.ttf") format("truetype"); }
+@font-face { font-family: "DM Sans"; font-style: italic; font-weight: 600; font-display: swap;
+  src: url("fonts/DMSans-SemiBoldItalic.ttf") format("truetype"); }
+@font-face { font-family: "DM Sans"; font-style: normal; font-weight: 700; font-display: swap;
+  src: url("fonts/DMSans-Bold.ttf") format("truetype"); }
+@font-face { font-family: "DM Sans"; font-style: italic; font-weight: 700; font-display: swap;
+  src: url("fonts/DMSans-BoldItalic.ttf") format("truetype"); }
+@font-face { font-family: "DM Sans"; font-style: normal; font-weight: 800; font-display: swap;
+  src: url("fonts/DMSans-ExtraBold.ttf") format("truetype"); }
+@font-face { font-family: "DM Sans"; font-style: italic; font-weight: 800; font-display: swap;
+  src: url("fonts/DMSans-ExtraBoldItalic.ttf") format("truetype"); }
+@font-face { font-family: "DM Sans"; font-style: normal; font-weight: 900; font-display: swap;
+  src: url("fonts/DMSans-Black.ttf") format("truetype"); }
+@font-face { font-family: "DM Sans"; font-style: italic; font-weight: 900; font-display: swap;
+  src: url("fonts/DMSans-BlackItalic.ttf") format("truetype"); }
+
+/* DM Mono + Inter — NOT uploaded; loaded from Google Fonts as the closest match.
+   DM Mono is used for code/IDs (very small footprint); Inter only appears in the
+   style-guide hero numerals. Flag for user: provide brand mono / display fonts if
+   you want full self-hosted control. */
+@import url("https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500;700&display=swap");
+
+:root {
+  /* ════════════════════════════════════════════════════════════════════════
+     01 · PRIMITIVES — raw color tokens
+     ════════════════════════════════════════════════════════════════════════ */
+
+  /* Brand — Primario (Electric Blue scale) */
+  --dvr-blue-normal:  #479DFD;   /* rgb(71,157,253)  — primary brand fill */
+  --dvr-blue-light:   #75B7FF;   /* rgb(117,183,255) — secondary highlight */
+  --dvr-blue-dark:    #3B67B7;   /* rgb(59,103,183)  — pressed / depth */
+  --dvr-blue-action:  #2F76F7;   /* rgb(47,118,247)  — links / on-press text */
+  --dvr-navy:         #2B3674;   /* rgb(43,54,116)   — heading color */
+
+  /* Neutrales — Gray scale */
+  --dvr-white:        #FFFFFF;
+  --dvr-gray-50:      #FBFBFB;
+  --dvr-gray-100:     #F6F6F6;   /* disabled bg */
+  --dvr-gray-200:     #F3F3F3;
+  --dvr-gray-300:     #D9D9D9;   /* divider */
+  --dvr-gray-400:     #C7C7C7;   /* cell interior */
+  --dvr-gray-500:     #7E7E7E;   /* muted text */
+  --dvr-gray-600:     #505050;
+  --dvr-gray-700:     #726C6C;
+  --dvr-gray-800:     #3F3F3E;
+  --dvr-gray-900:     #282828;
+  --dvr-black:        #000000;
+
+  /* Azules — semantic background tints */
+  --dvr-blue-turquoise:    #EAF9FF;   /* tile / wellness backgrounds */
+  --dvr-blue-field:        #F5F7FA;   /* input fill */
+  --dvr-blue-icon-bg:      #F4F7FE;   /* icon chip background */
+  --dvr-blue-section:      #F4F6FF;   /* page section bg */
+  --dvr-blue-chip:         #E9EDFF;
+  --dvr-blue-card-active:  #CBD4FF;
+  --dvr-blue-card:         #D9E5F7;
+  --dvr-blue-filter-icon:  #A3AED0;
+  --dvr-blue-search-icon:  #718EBF;
+  --dvr-blue-placeholder:  #8BA3CB;
+
+  /* Texto */
+  --dvr-text-heading:    #2B3674;
+  --dvr-text-primary:    #3F3F3E;
+  --dvr-text-secondary:  #888888;
+  --dvr-text-tertiary:   #C7C7CC;
+  --dvr-text-disabled:   #CCCCCC;
+  --dvr-text-link:       #2F76F7;
+  --dvr-text-error-dark: #991B1B;
+  --dvr-text-on-primary: #FFFFFF;
+
+  /* Alertas / Feedback */
+  --dvr-error:           #D86761;
+  --dvr-error-icon:      #EE5E5E;
+  --dvr-error-bg:        #FFE8E8;
+  --dvr-error-border:    #934A47;
+  --dvr-warning:         #F3A257;   /* "pendiente" orange */
+  --dvr-success-icon:    #12B76A;
+  --dvr-success-tag:     #5CC89B;
+  --dvr-success-bg:      #D1FADF;
+  --dvr-success-border:  #008D5B;
+  --dvr-info:            #2F76F7;
+  --dvr-info-bg:         #E9EDFF;
+
+  /* Programas (rehabilitation tracks) */
+  --dvr-cervical:        #6E9EF3;
+  --dvr-lumbar:          #4385FA;
+  --dvr-hombro:          #2960C3;   /* shoulder */
+  --dvr-neuro:           #7B6AE2;   /* neurological */
+  --dvr-patient-exp:     #145CC6;   /* derived */
+
+  /* Charts */
+  --dvr-chart-1: #D3F2FF;   /* azul claro-50 */
+  --dvr-chart-2: #94DAF0;   /* azul-100 */
+  --dvr-chart-3: #28B5E1;   /* azul-200 */
+  --dvr-chart-4: #4D75B5;   /* azul oscuro-300 */
+  --dvr-chart-5: #0C60AC;   /* azul oscuro-400 */
+  --dvr-chart-grey: #CFE2E2;
+  --dvr-chart-star: #FABC1E;   /* gold for ratings / highlights */
+
+  /* Transparencias / overlays */
+  --dvr-overlay-dark:  rgba(0, 0, 0, 0.5);
+  --dvr-overlay-light: rgba(240, 240, 240, 0.5);
+  --dvr-overlay-red:   rgba(255, 127, 127, 0.1);
+
+  /* ════════════════════════════════════════════════════════════════════════
+     02 · SEMANTIC — context-aware aliases
+     ════════════════════════════════════════════════════════════════════════ */
+
+  /* Surface */
+  --surface-page:        var(--dvr-white);
+  --surface-section:     var(--dvr-blue-section);
+  --surface-muted:       var(--dvr-gray-50);
+  --surface-card:        var(--dvr-white);
+  --surface-card-hover:  var(--dvr-gray-50);
+  --surface-card-active: var(--dvr-blue-card-active);
+  --surface-overlay:     rgba(2, 2, 70, 0.45);
+  --surface-inverse:     var(--dvr-navy);
+  --surface-disabled:    var(--dvr-gray-100);
+
+  /* Foreground / text */
+  --fg-heading:    var(--dvr-text-heading);   /* H1–H4, KPI numbers */
+  --fg-primary:    var(--dvr-text-primary);   /* body */
+  --fg-secondary:  var(--dvr-text-secondary); /* helper, metadata */
+  --fg-tertiary:   var(--dvr-text-tertiary);  /* dividers in text */
+  --fg-disabled:   var(--dvr-text-disabled);
+  --fg-on-primary: var(--dvr-text-on-primary);
+  --fg-link:       var(--dvr-text-link);
+  --fg-link-hover: var(--dvr-blue-dark);
+
+  /* Border */
+  --border-default:   #E4E6E8;
+  --border-subtle:    #EEEFF1;
+  --border-strong:    var(--dvr-gray-300);
+  --border-focus:     var(--dvr-blue-action);
+  --border-brand:     var(--dvr-blue-normal);
+  --border-disabled:  var(--dvr-gray-200);
+
+  /* Field */
+  --field-bg:           var(--dvr-blue-field);
+  --field-bg-focus:     var(--dvr-white);
+  --field-border:       var(--dvr-blue-field);
+  --field-border-focus: var(--dvr-blue-action);
+  --field-placeholder:  var(--dvr-blue-placeholder);
+
+  /* Action — Primary */
+  --action-primary-bg:         var(--dvr-blue-normal);
+  --action-primary-bg-hover:   var(--dvr-blue-action);
+  --action-primary-bg-pressed: var(--dvr-blue-dark);
+  --action-primary-fg:         var(--dvr-white);
+  /* Linear gradient used on the canonical primary CTA */
+  --action-primary-gradient: linear-gradient(180deg, #2F76F7 0%, #479DFD 100%);
+
+  /* Action — Secondary / Outline */
+  --action-outline-bg:         var(--dvr-white);
+  --action-outline-bg-hover:   var(--dvr-blue-icon-bg);
+  --action-outline-border:     var(--dvr-blue-normal);
+  --action-outline-fg:         var(--dvr-blue-action);
+
+  /* Action — Ghost */
+  --action-ghost-bg-hover: var(--dvr-blue-section);
+  --action-ghost-fg:       var(--dvr-blue-action);
+
+  /* Action — Destructive */
+  --action-destructive-bg:       var(--dvr-error);
+  --action-destructive-bg-hover: #C25551;
+  --action-destructive-fg:       var(--dvr-white);
+
+  /* Feedback semantic */
+  --fb-error-bg:      var(--dvr-error-bg);
+  --fb-error-border:  var(--dvr-error);
+  --fb-error-fg:      var(--dvr-text-error-dark);
+  --fb-warning-bg:    #FFF1E1;
+  --fb-warning-fg:    #8A4A09;
+  --fb-success-bg:    var(--dvr-success-bg);
+  --fb-success-fg:    #03603D;
+  --fb-info-bg:       var(--dvr-info-bg);
+  --fb-info-fg:       var(--dvr-blue-dark);
+
+  /* ════════════════════════════════════════════════════════════════════════
+     03 · SHADOWS (Sombras)
+     ════════════════════════════════════════════════════════════════════════ */
+  --shadow-card:    0 1.735px 10.014px 0 rgba(112, 144, 176, 0.12);
+  --shadow-raised:  0 4px 18px 0 rgba(112, 144, 176, 0.18);
+  --shadow-modal:   12px 12px 36px -6px rgba(2, 2, 70, 0.12);
+  --shadow-focus:   0 0 0 3px rgba(71, 157, 253, 0.35);
+  --shadow-inset-field: inset 0 0 0 1px rgba(43, 54, 116, 0.04);
+
+  /* ════════════════════════════════════════════════════════════════════════
+     04 · SPACING — 4 px base grid
+     ════════════════════════════════════════════════════════════════════════ */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  20px;
+  --space-6:  24px;
+  --space-7:  32px;
+  --space-8:  40px;
+  --space-9:  48px;
+  --space-10: 64px;
+  --space-11: 80px;
+  --space-12: 96px;
+  --space-13: 128px;
+
+  /* ════════════════════════════════════════════════════════════════════════
+     05 · RADIUS
+     ════════════════════════════════════════════════════════════════════════ */
+  --radius-none: 0;
+  --radius-sm:   4px;     /* buttons, chips, inputs */
+  --radius-md:   8px;     /* small cards */
+  --radius-lg:   12px;    /* cards */
+  --radius-xl:   16px;    /* large cards, modals */
+  --radius-2xl:  30px;    /* hero, calling-card panels */
+  --radius-full: 9999px;  /* avatars, pills */
+
+  /* ════════════════════════════════════════════════════════════════════════
+     06 · COMPONENT HEIGHTS
+     ════════════════════════════════════════════════════════════════════════ */
+  --h-control-xs: 24px;
+  --h-control-sm: 32px;
+  --h-control-md: 36px;   /* default button height */
+  --h-control-lg: 48px;
+  --h-control-xl: 52px;
+  --h-row:        56px;   /* table row */
+
+  /* ════════════════════════════════════════════════════════════════════════
+     07 · TYPOGRAPHY
+     Family stacks
+     ════════════════════════════════════════════════════════════════════════ */
+  --font-sans:    "DM Sans", "Helvetica Neue", Arial, system-ui, sans-serif;
+  --font-display: "DM Sans", "Helvetica Neue", Arial, system-ui, sans-serif;
+  --font-mono:    "DM Mono", ui-monospace, Menlo, Consolas, monospace;
+  /* Inter only used in the style-guide hero numerals */
+  --font-meta:    "Inter", "DM Sans", system-ui, sans-serif;
+
+  /* Weights */
+  --fw-regular:  400;
+  --fw-medium:   500;
+  --fw-semibold: 600;
+  --fw-bold:     700;
+
+  /* Type scale · 1.25 modular */
+  --fs-4xl:  40px;   /* H1 page hero */
+  --fs-3xl:  32px;   /* H2 section */
+  --fs-2xl:  24px;   /* H3 card */
+  --fs-xl:   20px;   /* H4 subtitle */
+  --fs-lg:   18px;   /* body lg */
+  --fs-base: 16px;   /* body */
+  --fs-sm:   14px;   /* table cell, label, body small */
+  --fs-xs:   12px;   /* helper, metadata */
+  --fs-2xs:  10px;   /* overline, badge */
+
+  /* Line heights */
+  --lh-tight:   1.15;
+  --lh-snug:    1.25;
+  --lh-normal:  1.45;
+  --lh-relaxed: 1.6;
+}
+
+/* ════════════════════════════════════════════════════════════════════════════
+   SEMANTIC TYPE HELPERS — apply directly to elements
+   ════════════════════════════════════════════════════════════════════════════ */
+
+html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+body {
+  font-family: var(--font-sans);
+  font-size:   var(--fs-base);
+  line-height: var(--lh-normal);
+  color:       var(--fg-primary);
+  background:  var(--surface-page);
+}
+
+.h1, h1 {
+  font-family: var(--font-display);
+  font-weight: var(--fw-bold);
+  font-size:   var(--fs-4xl);
+  line-height: var(--lh-tight);
+  color:       var(--fg-heading);
+  letter-spacing: -0.01em;
+}
+.h2, h2 {
+  font-family: var(--font-display);
+  font-weight: var(--fw-bold);
+  font-size:   var(--fs-3xl);
+  line-height: var(--lh-tight);
+  color:       var(--fg-heading);
+}
+.h3, h3 {
+  font-family: var(--font-display);
+  font-weight: var(--fw-bold);
+  font-size:   var(--fs-2xl);
+  line-height: var(--lh-snug);
+  color:       var(--fg-heading);
+}
+.h4, h4 {
+  font-family: var(--font-display);
+  font-weight: var(--fw-semibold);
+  font-size:   var(--fs-xl);
+  line-height: var(--lh-snug);
+  color:       var(--fg-heading);
+}
+
+.eyebrow {
+  font-family: var(--font-sans);
+  font-weight: var(--fw-medium);
+  font-size:   var(--fs-2xs);
+  line-height: 1;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color:       var(--fg-secondary);
+}
+
+.body-lg { font-size: var(--fs-lg); line-height: var(--lh-relaxed); }
+.body    { font-size: var(--fs-base); line-height: var(--lh-normal); }
+.body-sm { font-size: var(--fs-sm); line-height: var(--lh-normal); }
+.caption { font-size: var(--fs-xs); line-height: var(--lh-normal); color: var(--fg-secondary); }
+.micro   { font-size: var(--fs-2xs); line-height: 1.25; color: var(--fg-secondary); }
+
+.numeric {
+  font-feature-settings: "tnum" 1, "lnum" 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.mono { font-family: var(--font-mono); }
+
+a {
+  color: var(--fg-link);
+  text-decoration: none;
+  transition: color 120ms ease;
+}
+a:hover { color: var(--fg-link-hover); }
+
+::selection { background: rgba(47, 118, 247, 0.2); }

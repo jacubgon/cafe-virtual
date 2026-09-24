@@ -1,0 +1,721 @@
+/* ============================================================================
+   Dynamics Platform — Component CSS
+   The canonical styles for every reusable component, scoped under .dvr-*.
+   This file is the runtime equivalent of the design tokens — copy/lift it
+   into any product that imports colors_and_type.css.
+   ============================================================================ */
+
+/* ════════════════════════════════════════════════════════════════════════════
+   BUTTONS
+   ════════════════════════════════════════════════════════════════════════════ */
+.dvr-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 0 18px; border-radius: 8px;
+  font-family: var(--font-sans); font-weight: 500;
+  line-height: 1; letter-spacing: 0.01em;
+  border: 1px solid transparent;
+  transition: all 120ms ease;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.dvr-btn:disabled,
+.dvr-btn.is-disabled {
+  background: var(--surface-disabled);
+  color: var(--fg-disabled);
+  cursor: not-allowed;
+  border-color: var(--surface-disabled);
+  box-shadow: none;
+}
+
+.dvr-btn--xs { height: 28px; padding: 0 12px; font-size: 12px; }
+.dvr-btn--sm { height: 32px; padding: 0 14px; font-size: 13px; }
+.dvr-btn--md { height: 40px; padding: 0 18px; font-size: 14px; }
+.dvr-btn--lg { height: 48px; padding: 0 24px; font-size: 15px; border-radius: 8px; }
+.dvr-btn--xl { height: 52px; padding: 0 28px; font-size: 16px; border-radius: 10px; }
+
+.dvr-btn--primary {
+  background: linear-gradient(180deg, #4385FA 0%, #4385FA 100%);
+  color: #FFFFFF;
+  border: 1px solid #4385FA;
+  box-shadow: 0 4px 14px -4px rgba(67,133,250,0.45);
+}
+.dvr-btn--primary:hover { background: #2F76F7; border-color: #2F76F7; }
+.dvr-btn--primary:active, .dvr-btn--primary.is-active { background: #2657CA; border-color: #2657CA; }
+
+.dvr-btn--outline { background: #FFFFFF; color: var(--dvr-blue-action); border-color: var(--dvr-blue-normal); }
+.dvr-btn--outline:hover { background: var(--surface-section); }
+.dvr-btn--outline:active, .dvr-btn--outline.is-active { background: var(--dvr-blue-chip); }
+
+.dvr-btn--outline-gray { background: #FFFFFF; color: var(--fg-primary); border-color: var(--border-default); }
+.dvr-btn--outline-gray:hover { background: var(--surface-section); border-color: var(--dvr-blue-normal); color: var(--dvr-blue-action); }
+
+.dvr-btn--ghost { background: transparent; color: var(--dvr-blue-action); }
+.dvr-btn--ghost:hover { background: var(--surface-section); }
+
+.dvr-btn--destructive { background: var(--dvr-error); color: #FFFFFF; border-color: var(--dvr-error); }
+.dvr-btn--destructive:hover { background: #C25551; border-color: #C25551; }
+
+.dvr-btn--pill { border-radius: 999px; }
+.dvr-btn--icon-only { padding: 0; width: var(--icon-only-size, 40px); }
+
+.dvr-btn__icon { display: inline-flex; align-items: center; justify-content: center; }
+.dvr-btn__icon svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.dvr-btn--xs .dvr-btn__icon svg, .dvr-btn--sm .dvr-btn__icon svg { width: 14px; height: 14px; }
+.dvr-btn--lg .dvr-btn__icon svg, .dvr-btn--xl .dvr-btn__icon svg { width: 18px; height: 18px; }
+
+/* Standalone link button */
+.dvr-link {
+  background: transparent; color: var(--dvr-blue-action);
+  font-weight: 500; font-size: 14px;
+  text-decoration: none; cursor: pointer; border: 0;
+}
+.dvr-link:hover { text-decoration: underline; }
+
+/* ════════════════════════════════════════════════════════════════════════════
+   INPUTS / FORMS
+   ════════════════════════════════════════════════════════════════════════════ */
+.dvr-field { display: flex; flex-direction: column; gap: 6px; }
+.dvr-field__label { font-size: 13px; font-weight: 500; color: var(--fg-heading); }
+.dvr-field__hint  { font-size: 12px; color: var(--fg-secondary); }
+.dvr-field__error { font-size: 12px; color: var(--dvr-text-error-dark); display: flex; align-items: center; gap: 4px; }
+
+.dvr-input,
+.dvr-textarea {
+  height: 44px;
+  padding: 0 14px;
+  border-radius: 10px;
+  background: var(--field-bg);
+  border: 1px solid transparent;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--fg-primary);
+  outline: none;
+  transition: all 120ms ease;
+  width: 100%;
+}
+.dvr-textarea { min-height: 88px; padding: 12px 14px; line-height: 1.5; resize: vertical; }
+.dvr-input::placeholder,
+.dvr-textarea::placeholder { color: var(--dvr-blue-placeholder); }
+.dvr-input:focus,
+.dvr-textarea:focus {
+  background: #FFFFFF;
+  border-color: var(--dvr-blue-action);
+  box-shadow: 0 0 0 3px rgba(71,157,253,0.16);
+}
+.dvr-input.is-error { background: #FFE8E8; border-color: var(--dvr-error); color: var(--dvr-text-error-dark); }
+.dvr-input.is-error:focus { box-shadow: 0 0 0 3px rgba(216,103,97,0.16); }
+.dvr-input.is-success { background: #FFFFFF; border-color: var(--dvr-success-icon); }
+.dvr-input.is-disabled, .dvr-input:disabled { background: var(--dvr-gray-100); color: var(--fg-disabled); cursor: not-allowed; }
+
+/* Input with prefix icon */
+.dvr-input-wrap { position: relative; }
+.dvr-input-wrap__icon {
+  position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+  width: 18px; height: 18px; color: var(--dvr-blue-search-icon);
+  pointer-events: none;
+}
+.dvr-input-wrap .dvr-input { padding-left: 42px; }
+
+/* Search (pill) */
+.dvr-search {
+  position: relative; display: flex; align-items: center; width: 100%;
+}
+.dvr-search__icon { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; color: var(--dvr-blue-search-icon); pointer-events: none; }
+.dvr-search__input {
+  width: 100%; height: 44px;
+  padding: 0 18px 0 46px;
+  border-radius: 999px;
+  background: var(--field-bg);
+  border: 1px solid transparent;
+  font-family: var(--font-sans); font-size: 14px;
+  color: var(--fg-primary); outline: none;
+  transition: all 120ms ease;
+}
+.dvr-search__input::placeholder { color: var(--dvr-blue-placeholder); }
+.dvr-search__input:focus { background: #FFFFFF; border-color: var(--dvr-blue-action); box-shadow: 0 0 0 3px rgba(71,157,253,0.16); }
+.dvr-search__filter {
+  position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+  width: 32px; height: 32px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--dvr-blue-search-icon);
+  background: transparent; border: 0; cursor: pointer;
+}
+.dvr-search__filter:hover { background: var(--surface-section); color: var(--dvr-blue-action); }
+.dvr-search__filter svg { width: 18px; height: 18px; }
+
+/* Select / Dropdown trigger */
+.dvr-select {
+  position: relative;
+}
+.dvr-select__trigger {
+  width: 100%; height: 44px;
+  padding: 0 40px 0 14px;
+  border-radius: 10px;
+  background: #FFFFFF;
+  border: 1px solid var(--border-default);
+  font-family: var(--font-sans); font-size: 14px;
+  color: var(--fg-primary); cursor: pointer; text-align: left;
+  display: flex; align-items: center;
+}
+.dvr-select__trigger:hover { border-color: var(--dvr-blue-normal); }
+.dvr-select__trigger.is-open { border-color: var(--dvr-blue-action); box-shadow: 0 0 0 3px rgba(71,157,253,0.16); }
+.dvr-select__placeholder { color: var(--dvr-blue-placeholder); }
+.dvr-select__chev {
+  position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+  width: 16px; height: 16px; color: var(--fg-secondary);
+  pointer-events: none;
+}
+
+.dvr-menu {
+  position: absolute; top: calc(100% + 6px); left: 0; right: 0; z-index: 60;
+  background: #FFFFFF;
+  border: 1px solid var(--border-default);
+  border-radius: 12px;
+  box-shadow: 12px 12px 36px -6px rgba(2,2,70,0.12);
+  padding: 6px;
+  max-height: 280px; overflow-y: auto;
+}
+.dvr-menu__item {
+  width: 100%; padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 14px; color: var(--fg-primary);
+  background: transparent; border: 0; cursor: pointer; text-align: left;
+  display: flex; align-items: center; gap: 10px;
+}
+.dvr-menu__item:hover { background: var(--surface-section); color: var(--fg-heading); }
+.dvr-menu__item.is-selected { background: var(--dvr-blue-chip); color: var(--dvr-blue-action); font-weight: 600; }
+.dvr-menu__item.is-disabled { color: var(--fg-disabled); cursor: not-allowed; background: transparent; }
+
+/* Checkbox */
+.dvr-check {
+  position: relative;
+  display: inline-flex; align-items: center; gap: 10px;
+  cursor: pointer; font-size: 14px; color: var(--fg-primary);
+}
+.dvr-check input { position: absolute; opacity: 0; pointer-events: none; }
+.dvr-check__box {
+  width: 20px; height: 20px; border-radius: 5px;
+  border: 1.5px solid var(--border-default);
+  background: #FFFFFF;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 120ms ease;
+  flex-shrink: 0;
+}
+.dvr-check__box svg { width: 14px; height: 14px; color: #FFFFFF; opacity: 0; transition: opacity 120ms ease; stroke-width: 2.6; }
+.dvr-check input:checked + .dvr-check__box { background: var(--dvr-blue-action); border-color: var(--dvr-blue-action); }
+.dvr-check input:checked + .dvr-check__box svg { opacity: 1; }
+.dvr-check input:disabled + .dvr-check__box { background: var(--dvr-gray-100); border-color: var(--border-default); }
+
+/* Radio */
+.dvr-radio {
+  position: relative;
+  display: inline-flex; align-items: center; gap: 10px;
+  cursor: pointer; font-size: 14px; color: var(--fg-primary);
+}
+.dvr-radio input { position: absolute; opacity: 0; pointer-events: none; }
+.dvr-radio__dot {
+  width: 20px; height: 20px; border-radius: 50%;
+  border: 1.5px solid var(--border-default);
+  background: #FFFFFF;
+  position: relative;
+  flex-shrink: 0;
+}
+.dvr-radio__dot::after {
+  content: ""; position: absolute;
+  inset: 4px; border-radius: 50%;
+  background: var(--dvr-blue-action);
+  opacity: 0; transition: opacity 120ms ease;
+}
+.dvr-radio input:checked + .dvr-radio__dot { border-color: var(--dvr-blue-action); }
+.dvr-radio input:checked + .dvr-radio__dot::after { opacity: 1; }
+
+/* Toggle */
+.dvr-toggle {
+  position: relative;
+  width: 42px; height: 24px;
+  background: var(--dvr-gray-300);
+  border-radius: 999px;
+  transition: background 160ms ease;
+  padding: 0; border: 0; cursor: pointer;
+}
+.dvr-toggle__thumb {
+  position: absolute;
+  top: 2px; left: 2px;
+  width: 20px; height: 20px;
+  background: #FFFFFF;
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.18);
+  transition: left 160ms ease;
+}
+.dvr-toggle.is-on { background: var(--dvr-blue-action); }
+.dvr-toggle.is-on .dvr-toggle__thumb { left: 20px; }
+.dvr-toggle:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ════════════════════════════════════════════════════════════════════════════
+   TAGS / CHIPS / BADGES
+   ════════════════════════════════════════════════════════════════════════════ */
+.dvr-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  height: 24px; padding: 0 10px;
+  border-radius: 999px;
+  font-size: 11px; font-weight: 600;
+  line-height: 1; white-space: nowrap;
+}
+.dvr-tag--lg { height: 28px; padding: 0 14px; font-size: 12px; }
+.dvr-tag__dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: 0.85; }
+
+.dvr-tag--blue, .dvr-tag--info { background: #E9EDFF; color: #2F76F7; }
+.dvr-tag--ok       { background: #D1FADF; color: #03603D; }
+.dvr-tag--pend     { background: #FFF1E1; color: #8A4A09; }
+.dvr-tag--err      { background: #FFE8E8; color: #991B1B; }
+.dvr-tag--gray     { background: #F3F3F3; color: var(--fg-primary); }
+.dvr-tag--teal     { background: #EAF9FF; color: #0C60AC; }
+.dvr-tag--purple   { background: #ECE9FB; color: #5A47C2; }
+
+.dvr-tag--cervical { background: #E0EAFD; color: #1F4FB8; }
+.dvr-tag--lumbar   { background: #DCE7FE; color: #1A4FCB; }
+.dvr-tag--hombro   { background: #D5E0F4; color: #1B3F8A; }
+.dvr-tag--neuro    { background: #ECE9FB; color: #5A47C2; }
+
+/* Program ring (the C/N/H/L colored circles) */
+.dvr-progdot {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 22px; height: 22px;
+  border-radius: 999px;
+  color: #FFFFFF;
+  font-family: var(--font-display);
+  font-size: 11px; font-weight: 700;
+}
+.dvr-progdot--C { background: #75B7FF; }
+.dvr-progdot--L { background: #4385FA; }
+.dvr-progdot--H { background: #2960C3; }
+.dvr-progdot--N { background: #7B6AE2; }
+
+/* Counter badge */
+.dvr-badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 20px; height: 20px; padding: 0 6px;
+  border-radius: 999px;
+  background: var(--dvr-error); color: #FFFFFF;
+  font-size: 11px; font-weight: 700; line-height: 1;
+}
+.dvr-badge--blue { background: var(--dvr-blue-action); }
+.dvr-badge--ok   { background: var(--dvr-success-icon); }
+.dvr-badge--dot  { width: 8px; height: 8px; min-width: 8px; padding: 0; }
+
+/* Status dot */
+.dvr-status-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; }
+.dvr-status-dot--ok   { background: var(--dvr-success-icon); }
+.dvr-status-dot--pend { background: var(--dvr-warning); }
+.dvr-status-dot--err  { background: var(--dvr-error); }
+.dvr-status-dot--info { background: var(--dvr-blue-action); }
+.dvr-status-dot--off  { background: var(--dvr-gray-400); }
+
+/* ════════════════════════════════════════════════════════════════════════════
+   AVATARS
+   ════════════════════════════════════════════════════════════════════════════ */
+.dvr-avatar {
+  border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;
+  font-weight: 600; color: #FFFFFF; line-height: 1; flex-shrink: 0;
+  background: linear-gradient(135deg, #75B7FF, #2F76F7);
+  overflow: hidden;
+}
+.dvr-avatar--sm { width: 28px; height: 28px; font-size: 11px; }
+.dvr-avatar--md { width: 40px; height: 40px; font-size: 14px; }
+.dvr-avatar--lg { width: 56px; height: 56px; font-size: 18px; }
+.dvr-avatar--xl { width: 88px; height: 88px; font-size: 28px; }
+
+.dvr-avatar--outline {
+  background: #FFFFFF;
+  border: 1.5px solid var(--dvr-blue-normal);
+  color: var(--dvr-blue-normal);
+}
+.dvr-avatar--outline svg { width: 60%; height: 60%; }
+
+.dvr-pat-bubble {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--dvr-blue-icon-bg); color: var(--dvr-blue-action);
+  display: inline-flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.dvr-pat-bubble svg { width: 22px; height: 22px; }
+
+/* ════════════════════════════════════════════════════════════════════════════
+   TABS / SEGMENTED
+   ════════════════════════════════════════════════════════════════════════════ */
+.dvr-tabs {
+  display: flex; gap: 8px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.dvr-tabs__opt {
+  position: relative;
+  padding: 12px 18px;
+  font-family: var(--font-sans); font-size: 15px; font-weight: 500;
+  color: var(--fg-secondary); background: transparent; border: 0;
+  transition: color 120ms ease; cursor: pointer;
+}
+.dvr-tabs__opt:hover { color: var(--fg-heading); }
+.dvr-tabs__opt.is-on { color: var(--dvr-blue-action); font-weight: 600; }
+.dvr-tabs__opt.is-on::after {
+  content: ""; position: absolute;
+  left: 12px; right: 12px; bottom: -1px; height: 3px;
+  background: var(--dvr-blue-action);
+  border-radius: 3px 3px 0 0;
+}
+
+.dvr-segmented {
+  display: inline-flex; padding: 3px;
+  background: var(--dvr-blue-section);
+  border-radius: 10px;
+  border: 1px solid var(--border-subtle);
+}
+.dvr-segmented__opt {
+  padding: 6px 14px; border-radius: 7px;
+  font-size: 13px; font-weight: 500;
+  color: var(--fg-secondary);
+  background: transparent; border: 0; cursor: pointer;
+  transition: all 120ms ease;
+}
+.dvr-segmented__opt:hover { color: var(--fg-heading); }
+.dvr-segmented__opt.is-on { background: #FFFFFF; color: var(--fg-heading); box-shadow: 0 1px 3px rgba(0,0,0,0.06); font-weight: 600; }
+
+/* ════════════════════════════════════════════════════════════════════════════
+   CARDS
+   ════════════════════════════════════════════════════════════════════════════ */
+.dvr-card {
+  background: #FFFFFF;
+  border: 1px solid var(--border-default);
+  border-radius: 16px;
+  box-shadow: var(--shadow-card);
+  padding: 20px;
+}
+.dvr-card--flat { box-shadow: none; }
+.dvr-card--raised { box-shadow: var(--shadow-raised); }
+
+/* ════════════════════════════════════════════════════════════════════════════
+   ALERTS
+   ════════════════════════════════════════════════════════════════════════════ */
+.dvr-alert {
+  display: flex; gap: 12px; align-items: flex-start;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid;
+}
+.dvr-alert__icon {
+  width: 24px; height: 24px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: #FFFFFF; font-weight: 700; font-size: 14px;
+  flex-shrink: 0;
+}
+.dvr-alert__body { flex: 1; min-width: 0; }
+.dvr-alert__title { font-weight: 600; font-size: 14px; color: var(--fg-heading); }
+.dvr-alert__text  { font-size: 13px; color: var(--fg-primary); margin-top: 2px; line-height: 1.45; }
+.dvr-alert__close { color: var(--fg-secondary); background: transparent; border: 0; cursor: pointer; padding: 4px; }
+.dvr-alert__close:hover { color: var(--fg-heading); }
+.dvr-alert__close svg { width: 16px; height: 16px; }
+
+.dvr-alert--success { background: #D1FADF; border-color: #008D5B; }
+.dvr-alert--success .dvr-alert__icon { background: var(--dvr-success-icon); }
+.dvr-alert--success .dvr-alert__title { color: #03603D; }
+
+.dvr-alert--warning { background: #FFF1E1; border-color: var(--dvr-warning); }
+.dvr-alert--warning .dvr-alert__icon { background: var(--dvr-warning); }
+.dvr-alert--warning .dvr-alert__title { color: #8A4A09; }
+
+.dvr-alert--error { background: #FFE8E8; border-color: var(--dvr-error-border); }
+.dvr-alert--error .dvr-alert__icon { background: var(--dvr-error-icon); }
+.dvr-alert--error .dvr-alert__title { color: var(--dvr-text-error-dark); }
+
+.dvr-alert--info { background: var(--dvr-blue-chip); border-color: var(--dvr-blue-normal); }
+.dvr-alert--info .dvr-alert__icon { background: var(--dvr-blue-action); }
+.dvr-alert--info .dvr-alert__title { color: var(--fg-heading); }
+
+/* Toast */
+.dvr-toast {
+  background: #FFFFFF;
+  border-radius: 12px;
+  box-shadow: 12px 12px 36px -6px rgba(2,2,70,0.18);
+  border: 1px solid var(--border-default);
+  padding: 14px 16px;
+  display: flex; align-items: center; gap: 12px;
+  min-width: 320px; max-width: 420px;
+}
+.dvr-toast__icon { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #FFFFFF; font-weight: 700; font-size: 14px; flex-shrink: 0; }
+.dvr-toast__body { flex: 1; }
+.dvr-toast__title { font-weight: 600; font-size: 14px; color: var(--fg-heading); }
+.dvr-toast__text  { font-size: 12px; color: var(--fg-secondary); margin-top: 2px; }
+.dvr-toast--ok  .dvr-toast__icon { background: var(--dvr-success-icon); }
+.dvr-toast--err .dvr-toast__icon { background: var(--dvr-error-icon); }
+.dvr-toast--info .dvr-toast__icon { background: var(--dvr-blue-action); }
+
+/* ════════════════════════════════════════════════════════════════════════════
+   TABLES
+   ════════════════════════════════════════════════════════════════════════════ */
+.dvr-table {
+  display: flex; flex-direction: column;
+  background: #FFFFFF;
+  border-radius: 14px;
+  border: 1px solid var(--border-subtle);
+  overflow: hidden;
+}
+.dvr-table__head, .dvr-table__row {
+  display: grid;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 16px;
+}
+.dvr-table__head {
+  background: var(--surface-muted);
+  font-size: 12px; color: var(--fg-secondary); font-weight: 500;
+  text-transform: none;
+}
+.dvr-table__row { border-top: 1px solid var(--border-subtle); }
+.dvr-table__row:hover { background: rgba(244,246,255,0.55); }
+.dvr-table__row .dvr-table__cell { font-size: 14px; color: var(--fg-primary); }
+.dvr-table__row strong { color: var(--fg-heading); font-weight: 700; }
+.dvr-table__cell--info { display: flex; align-items: center; gap: 12px; }
+.dvr-table__names { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.dvr-table__name { font-size: 14px; font-weight: 700; color: var(--fg-heading); }
+.dvr-table__sub  { font-size: 13px; color: var(--fg-secondary); }
+
+/* ════════════════════════════════════════════════════════════════════════════
+   PROGRESS BARS
+   ════════════════════════════════════════════════════════════════════════════ */
+.dvr-progress { display: flex; flex-direction: column; gap: 6px; }
+.dvr-progress__head { display: flex; justify-content: space-between; font-size: 12px; color: var(--fg-secondary); }
+.dvr-progress__head b { color: var(--fg-heading); font-weight: 600; }
+.dvr-progress__track {
+  height: 6px;
+  background: var(--dvr-blue-icon-bg);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.dvr-progress__track--thick { height: 10px; }
+.dvr-progress__fill {
+  height: 100%;
+  background: linear-gradient(90deg, #2F76F7, #479DFD);
+  border-radius: 999px;
+}
+.dvr-progress__fill--ok   { background: linear-gradient(90deg, #12B76A, #5CC89B); }
+.dvr-progress__fill--warn { background: linear-gradient(90deg, #F3A257, #FAB97A); }
+.dvr-progress__fill--err  { background: linear-gradient(90deg, #D86761, #EE5E5E); }
+
+/* ════════════════════════════════════════════════════════════════════════════
+   MODAL  /  Confirm Dialog
+   Anatomy (per design system):
+     [Eyebrow badge] — optional, sits above the dialog as a context chip
+     ┌─────────────────────────────────────────────────────┐
+     │                  ¿Title as question?            [×] │
+     │     Centered description explaining consequences.   │
+     │  ───────────────────────────────────────────────── │
+     │  [   Cancelar   ]   [    Primary action      ]     │
+     └─────────────────────────────────────────────────────┘
+   ════════════════════════════════════════════════════════════════════════════ */
+.dvr-modal-wrap {
+  width: 100%; max-width: 484px;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.dvr-modal-eyebrow {
+  align-self: flex-start;
+  display: inline-flex; align-items: center; gap: 6px;
+  height: 22px; padding: 0 10px;
+  background: #E6EEFC;
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-size: 12px; font-weight: 500; line-height: 16px;
+  color: var(--fg-heading);
+}
+.dvr-modal-eyebrow__dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--dvr-blue-action);
+}
+
+.dvr-modal {
+  position: relative;
+  background: #FFFFFF;
+  border-radius: 8px;
+  box-shadow: 12px 12px 36px 6px rgba(2,2,70,0.12);
+  width: 100%;
+  padding: 32px 46px 24px 46px;
+  display: flex; flex-direction: column;
+  gap: 14px;
+}
+.dvr-modal__title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 17px;
+  line-height: 21px;
+  letter-spacing: -0.01em;
+  text-align: center;
+  color: var(--fg-heading);
+  margin: 0;
+}
+.dvr-modal__body {
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 21px;
+  text-align: center;
+  color: var(--fg-primary);
+  margin: 0;
+}
+.dvr-modal__sep {
+  height: 1px;
+  background: var(--border-strong, #D9D9D9);
+  margin: 2px 0 4px;
+}
+.dvr-modal__foot {
+  display: flex; gap: 32px;
+  justify-content: space-between;
+}
+.dvr-modal__foot .dvr-btn {
+  flex: 1 1 0;
+  min-width: 0;
+  height: 38px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.4px;
+}
+.dvr-modal__close {
+  position: absolute;
+  top: 12px; right: 12px;
+  width: 28px; height: 28px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: transparent; border: 0;
+  border-radius: 6px;
+  color: var(--fg-secondary);
+  cursor: pointer;
+  transition: background 120ms ease, color 120ms ease;
+}
+.dvr-modal__close:hover { background: var(--surface-section); color: var(--fg-heading); }
+.dvr-modal__close svg { width: 16px; height: 16px; }
+
+/* Loading variant — just title + spinner + cancel link */
+.dvr-modal--loading { padding: 32px 46px 20px 46px; align-items: center; }
+.dvr-modal--loading .dvr-modal__spinner {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  background: conic-gradient(from 90deg, var(--dvr-blue-light) 0deg, var(--dvr-blue-action) 270deg, transparent 270deg);
+  -webkit-mask: radial-gradient(circle 18px at center, transparent 17px, #000 18px);
+          mask: radial-gradient(circle 18px at center, transparent 17px, #000 18px);
+  animation: dvr-spin 900ms linear infinite;
+}
+@keyframes dvr-spin { to { transform: rotate(360deg); } }
+.dvr-modal--loading .dvr-modal__cancel-link {
+  background: transparent; border: 0;
+  font-family: var(--font-body); font-size: 13px; font-weight: 500;
+  color: var(--dvr-blue-action); cursor: pointer;
+  padding: 6px 10px;
+}
+.dvr-modal--loading .dvr-modal__cancel-link:hover { text-decoration: underline; }
+
+.dvr-modal-scrim {
+  position: fixed; inset: 0;
+  background: rgba(2, 2, 70, 0.45);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 100; padding: 24px;
+}
+
+/* ════════════════════════════════════════════════════════════════════════════
+   TOOLTIP
+   ════════════════════════════════════════════════════════════════════════════ */
+.dvr-tip-wrap { position: relative; display: inline-flex; }
+.dvr-tip {
+  position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%);
+  background: var(--fg-heading);
+  color: #FFFFFF;
+  font-size: 12px; padding: 6px 10px;
+  border-radius: 6px; white-space: nowrap;
+  pointer-events: none;
+}
+.dvr-tip::after {
+  content: ""; position: absolute; left: 50%; transform: translateX(-50%);
+  top: 100%;
+  border: 5px solid transparent;
+  border-top-color: var(--fg-heading);
+}
+
+/* ════════════════════════════════════════════════════════════════════════════
+   KPI tile
+   ════════════════════════════════════════════════════════════════════════════ */
+.dvr-kpi {
+  display: flex; align-items: center; gap: 14px;
+  padding: 16px 18px;
+  background: #FFFFFF;
+  border-radius: 14px;
+  border: 1px solid var(--border-subtle);
+}
+.dvr-kpi__icon {
+  width: 44px; height: 44px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+}
+.dvr-kpi__icon svg { width: 22px; height: 22px; }
+.dvr-kpi__body { flex: 1; }
+.dvr-kpi__label { font-size: 13px; color: var(--fg-secondary); }
+.dvr-kpi__value { font-family: var(--font-display); font-weight: 700; font-size: 24px; color: var(--fg-heading); letter-spacing: -0.005em; margin-top: 2px; }
+
+/* ════════════════════════════════════════════════════════════════════════════
+   SIDEBAR NAV ITEM (standalone, no shell)
+   ════════════════════════════════════════════════════════════════════════════ */
+.dvr-nav-item {
+  display: flex; align-items: center; gap: 14px;
+  padding: 12px 22px;
+  color: var(--fg-primary);
+  font-family: var(--font-sans); font-size: 15px; font-weight: 500;
+  width: 100%; text-align: left;
+  transition: background 120ms ease, color 120ms ease;
+  position: relative;
+  background: transparent; border: 0; cursor: pointer;
+}
+.dvr-nav-item:hover { background: var(--surface-section); color: var(--fg-heading); }
+.dvr-nav-item__icon { width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; color: var(--fg-primary); flex-shrink: 0; }
+.dvr-nav-item__icon svg { width: 100%; height: 100%; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.dvr-nav-item:hover .dvr-nav-item__icon { color: var(--dvr-blue-action); }
+.dvr-nav-item__label { flex: 1; }
+.dvr-nav-item.is-active {
+  background: var(--dvr-blue-section);
+  color: var(--dvr-blue-action);
+  font-weight: 600;
+}
+.dvr-nav-item.is-active::before {
+  content: ""; position: absolute;
+  left: 0; top: 6px; bottom: 6px;
+  width: 3px; background: var(--dvr-blue-action); border-radius: 0 3px 3px 0;
+}
+.dvr-nav-item.is-active .dvr-nav-item__icon { color: var(--dvr-blue-action); }
+.dvr-nav-item--muted { color: var(--fg-tertiary); }
+.dvr-nav-item--muted .dvr-nav-item__icon { color: var(--fg-tertiary); }
+
+/* ════════════════════════════════════════════════════════════════════════════
+   EMPTY STATE
+   ════════════════════════════════════════════════════════════════════════════ */
+.dvr-empty {
+  background: #FFFFFF;
+  border: 1px solid var(--border-default);
+  border-radius: 16px;
+  box-shadow: var(--shadow-card);
+  padding: 40px 32px;
+  display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center;
+}
+.dvr-empty__art { width: 80px; height: 80px; border-radius: 50%; background: var(--surface-section); display: flex; align-items: center; justify-content: center; }
+.dvr-empty__art svg { width: 36px; height: 36px; color: var(--dvr-blue-search-icon); stroke: currentColor; fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.dvr-empty__title { font-size: 16px; font-weight: 700; color: var(--fg-heading); }
+.dvr-empty__sub { font-size: 13px; color: var(--fg-secondary); max-width: 320px; line-height: 1.5; }
+
+/* ════════════════════════════════════════════════════════════════════════════
+   PAGINATION
+   ════════════════════════════════════════════════════════════════════════════ */
+.dvr-pagination { display: inline-flex; align-items: center; gap: 4px; }
+.dvr-pagination__btn {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: transparent; border: 0;
+  color: var(--fg-primary); font-size: 14px; font-weight: 500;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: all 120ms ease;
+}
+.dvr-pagination__btn:hover { background: var(--surface-section); color: var(--dvr-blue-action); }
+.dvr-pagination__btn.is-on { background: var(--dvr-blue-action); color: #FFFFFF; }
+.dvr-pagination__btn:disabled { color: var(--fg-disabled); cursor: not-allowed; }
+.dvr-pagination__btn svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.dvr-pagination__sep { color: var(--fg-tertiary); padding: 0 4px; }

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Oficina Virtual · Dynamics VR</title>
+  <link rel="stylesheet" href="/_ds/dvr/colors_and_type.css" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+
+  <!-- ══════════ ONBOARDING ══════════ -->
+  <div id="onboarding" class="page">
+    <div class="ob-wrap">
+      <div class="ob-head">
+        <div class="eyebrow">DYNAMICS VR · PAUSA DE CAFÉ</div>
+        <h1>La oficina virtual del equipo</h1>
+        <p class="lead">Elige tu avatar, muévete por el mapa y acércate a tus compañeros: la cámara se abre sola cuando estáis cerca o en la misma sala.</p>
+      </div>
+
+      <div class="ob-grid">
+        <div class="card ob-form">
+          <div class="field">
+            <label for="name-input">Tu nombre</label>
+            <input id="name-input" type="text" placeholder="Ej. Marta" maxlength="24" autocomplete="off" />
+          </div>
+
+          <div class="field">
+            <div class="field-label">Avatar</div>
+            <div id="body-choices" class="swatch-row"></div>
+          </div>
+
+          <div class="field">
+            <div class="field-label">Color</div>
+            <div id="color-choices" class="swatch-row"></div>
+          </div>
+
+          <div class="vr-toggle">
+            <div>
+              <div class="vr-title">Gafas de realidad virtual</div>
+              <div class="vr-sub">Complemento de la casa.</div>
+            </div>
+            <button id="vr-switch" class="switch on" aria-label="Gafas VR"><div class="knob"></div></button>
+          </div>
+        </div>
+
+        <div class="card ob-preview">
+          <div class="preview-stage">
+            <div id="preview-avatar" class="preview-avatar"></div>
+          </div>
+          <div class="preview-meta">
+            <div id="preview-name" class="preview-name">Invitado</div>
+            <div class="preview-sub">Entra y saluda al equipo</div>
+          </div>
+          <button id="enter-btn" class="btn-primary">Entrar a la oficina</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════ OFICINA ══════════ -->
+  <div id="office" class="page hidden">
+    <div class="office-inner">
+
+      <div class="card topbar">
+        <div class="topbar-room">
+          <div id="room-eyebrow" class="eyebrow">ZONA ABIERTA</div>
+          <div id="room-name" class="room-name">Plaza central</div>
+        </div>
+        <div id="room-hint" class="room-hint">Espacio común. Acércate a alguien y se abre el vídeo entre vosotros.</div>
+        <div class="topbar-actions">
+          <div id="phrases" class="phrases"></div>
+          <button id="games-btn" class="btn-purple" title="Disponible en la fase 2">Minijuegos</button>
+        </div>
+      </div>
+
+      <div class="office-grid">
+        <div id="stage-wrap" class="stage-wrap">
+          <div id="stage" class="stage"></div>
+        </div>
+
+        <div class="side">
+          <div class="card">
+            <div class="side-head">
+              <div class="side-title">Cerca de ti</div>
+              <div id="near-count" class="chip">0</div>
+            </div>
+            <div class="selfcam">
+              <video id="self-video" autoplay muted playsinline></video>
+              <div id="cam-overlay" class="cam-overlay"><div id="cam-msg">Cámara apagada. Actívala para que te vean.</div></div>
+              <div id="self-label" class="self-label">Invitado (tú)</div>
+            </div>
+            <div class="cam-controls">
+              <button id="cam-btn" class="btn-primary small">Activar mi cámara</button>
+              <button id="mic-btn" class="btn-outline small" title="Silenciar (M)">🎤 Micro</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="eyebrow">VÍDEO DE PROXIMIDAD</div>
+            <div id="near-empty" class="near-empty">Nadie cerca. Acércate a un compañero o entra en una sala y su vídeo se abrirá aquí.</div>
+            <div id="near-grid" class="near-grid"></div>
+          </div>
+
+          <div class="card help-card">
+            Muévete con <strong>WASD</strong> o las flechas. También puedes hacer clic en el mapa para caminar hasta allí.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════ Modal de videollamada de sala ══════════ -->
+    <div id="call-modal" class="hidden">
+      <div class="call-card">
+        <div class="call-head">
+          <div>
+            <div id="call-eyebrow" class="call-eyebrow">EN LA SALA</div>
+            <div id="call-title" class="call-title">Sala</div>
+          </div>
+          <div id="call-count" class="call-count">1 dentro</div>
+        </div>
+        <div id="call-grid" class="call-grid"></div>
+        <div class="call-controls">
+          <button id="call-mic" class="call-ctrl" title="Silenciar (M)">🎤</button>
+          <button id="call-cam" class="call-ctrl" title="Cámara">📷</button>
+          <button id="call-leave" class="call-leave">Salir de la sala</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script type="module" src="/js/main.js"></script>
+</body>
+</html>

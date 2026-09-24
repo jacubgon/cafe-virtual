@@ -1,0 +1,104 @@
+/* ============================================================================
+   Dynamics Platform — UI Kit demo page layout
+   These styles are ONLY for the kit document itself — not for product code.
+   ============================================================================ */
+@import url("../../colors_and_type.css");
+@import url("./components.css");
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body { background: #FAFBFC; color: var(--fg-primary); font-family: var(--font-sans); }
+ul { list-style: none; }
+img { display: block; max-width: 100%; }
+
+.kit {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  min-height: 100vh;
+}
+
+/* ── Left nav ───────────────────────────────────────────────────────────── */
+.kit__nav {
+  background: #FFFFFF;
+  border-right: 1px solid var(--border-subtle);
+  padding: 24px 16px;
+  position: sticky; top: 0; align-self: start;
+  height: 100vh; overflow-y: auto;
+}
+.kit__brand { display: flex; flex-direction: column; gap: 4px; padding: 0 8px 18px 8px; border-bottom: 1px solid var(--border-subtle); margin-bottom: 14px; }
+.kit__brand img { width: 130px; height: auto; }
+.kit__brand-sub { font-size: 11px; color: var(--fg-secondary); letter-spacing: 0.08em; text-transform: uppercase; font-weight: 500; }
+
+.kit__navgroup { padding: 10px 8px 4px 8px; font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--fg-secondary); font-weight: 600; }
+.kit__navlink {
+  display: block; padding: 8px 12px; border-radius: 8px;
+  font-size: 14px; color: var(--fg-primary); text-decoration: none;
+  font-weight: 500;
+}
+.kit__navlink:hover { background: var(--surface-section); color: var(--fg-heading); }
+
+/* ── Right content ──────────────────────────────────────────────────────── */
+.kit__main { padding: 24px 36px 96px 36px; max-width: 1200px; }
+
+.kit__pageheader { padding: 24px 0 8px 0; border-bottom: 1px solid var(--border-subtle); margin-bottom: 32px; }
+.kit__pageheader h1 {
+  font-family: var(--font-display); font-weight: 700; font-size: 36px;
+  color: var(--fg-heading); letter-spacing: -0.01em;
+}
+.kit__pageheader p { font-size: 15px; color: var(--fg-secondary); margin-top: 8px; line-height: 1.5; max-width: 720px; }
+
+/* Section */
+.kit__section { margin: 56px 0 0 0; scroll-margin-top: 20px; }
+.kit__section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; padding-bottom: 14px; border-bottom: 1px solid var(--border-subtle); margin-bottom: 28px; }
+.kit__section-head h2 { font-family: var(--font-display); font-weight: 700; font-size: 22px; color: var(--fg-heading); letter-spacing: -0.005em; }
+.kit__section-desc { font-size: 13px; color: var(--fg-secondary); }
+.kit__section-eyebrow { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--fg-secondary); font-weight: 600; }
+
+/* Subsection */
+.kit__sub { margin-top: 28px; }
+.kit__sub-head {
+  display: flex; align-items: center; gap: 12px;
+  font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--fg-secondary); font-weight: 600;
+  margin-bottom: 14px;
+}
+.kit__sub-head::after { content: ""; flex: 1; height: 1px; background: var(--border-subtle); }
+
+/* Demo cards */
+.kit__demo {
+  background: #FFFFFF;
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  padding: 24px;
+  display: flex; flex-direction: column; gap: 18px;
+}
+.kit__demo-row {
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+}
+.kit__demo-row + .kit__demo-row { padding-top: 14px; border-top: 1px dashed var(--border-subtle); }
+.kit__demo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+}
+.kit__demo-grid--2 { grid-template-columns: repeat(2, 1fr); }
+.kit__demo-grid--3 { grid-template-columns: repeat(3, 1fr); }
+.kit__demo-grid--4 { grid-template-columns: repeat(4, 1fr); }
+
+.kit__state-lbl {
+  display: inline-block; min-width: 80px;
+  font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--fg-secondary); font-weight: 500;
+}
+
+.kit__code {
+  display: inline-block; padding: 2px 6px; border-radius: 4px;
+  background: var(--surface-section); color: var(--dvr-blue-action);
+  font-family: var(--font-mono); font-size: 11px;
+}
+
+/* On-card examples that need a coloured backdrop */
+.kit__on-section { background: var(--surface-section); padding: 22px; border-radius: 12px; }
+
+/* Two-column for combined demos (e.g. patient list inside table example) */
+.kit__split { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }

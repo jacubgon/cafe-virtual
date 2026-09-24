@@ -1,0 +1,14 @@
+# Blueprint de despliegue para Render (https://render.com).
+# Con esto, Render crea el servicio web automáticamente al conectar el repo.
+services:
+  - type: web
+    name: cafe-virtual
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: 20.12.0
+    # Render asigna el puerto por la variable PORT; el servidor ya la usa.
+    # Los WebSockets (Socket.IO) funcionan en los web services de Render.

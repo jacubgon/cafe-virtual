@@ -1,0 +1,518 @@
+/* ============================================================================
+   Dynamics Platform — extra styles for Home / Crear sesiones / Streaming / Academy
+   Loaded AFTER styles.css.
+   ============================================================================ */
+
+/* ── Tabs · inset variant (inside a panel) ──────────────────────────────── */
+.dvr-tabs--inset { border-bottom: 1px solid var(--border-subtle); padding: 0 16px; gap: 16px; }
+.dvr-tabs--inset .dvr-tabs__opt { padding: 10px 6px; font-size: 14px; }
+.dvr-tabs--inset .dvr-tabs__opt.is-on::after { left: 6px; right: 6px; bottom: -1px; }
+
+/* ════════════════════════════════════════════════════════════════════════
+   HOME — quick action cards + two-column panels
+   ════════════════════════════════════════════════════════════════════════ */
+.dvr-quickrow {
+  display: grid;
+  grid-template-columns: 1.1fr 1.1fr 1.1fr 1.2fr;
+  gap: 16px;
+  align-items: stretch;
+}
+
+.dvr-quick {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 8px;
+  text-align: left;
+  padding: 18px 18px 16px 18px;
+  border-radius: 16px;
+  background: var(--dvr-blue-card);
+  border: 1px solid transparent;
+  transition: transform 120ms ease, box-shadow 120ms ease;
+  min-height: 132px;
+}
+.dvr-quick:hover { transform: translateY(-1px); box-shadow: var(--shadow-card); }
+.dvr-quick--ghost {
+  background: #FFFFFF;
+  border-color: var(--border-subtle);
+}
+.dvr-quick__icon {
+  width: 40px; height: 40px; border-radius: 12px;
+  background: #FFFFFF; color: var(--dvr-blue-action);
+  display: flex; align-items: center; justify-content: center;
+}
+.dvr-quick__icon--soft { background: var(--dvr-blue-icon-bg); }
+.dvr-quick__icon svg { width: 22px; height: 22px; }
+.dvr-quick__body { display: flex; flex-direction: column; gap: 4px; width: 100%; }
+.dvr-quick__title { font-size: 15px; font-weight: 700; color: var(--fg-heading); }
+.dvr-quick__sub   { font-size: 12px; color: var(--fg-secondary); line-height: 1.3; }
+.dvr-quick__cta {
+  margin-top: 10px;
+  align-self: stretch;
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  height: 36px; padding: 0 14px;
+  border-radius: 999px;
+  font-size: 13px; font-weight: 500;
+}
+.dvr-quick__cta--fill    { background: var(--dvr-blue-action); color: #FFFFFF; }
+.dvr-quick__cta--outline { background: #FFFFFF; color: var(--dvr-blue-action); border: 1px solid var(--dvr-blue-normal); }
+.dvr-quick__cta--outline svg { width: 12px; height: 12px; }
+
+.dvr-quickside { display: flex; flex-direction: column; gap: 12px; }
+.dvr-quickstat {
+  display: flex; align-items: center; gap: 14px;
+  padding: 12px 16px;
+  border-radius: 14px;
+  background: #FFFFFF;
+  border: 1px solid var(--border-subtle);
+  text-align: left;
+  flex: 1;
+  transition: border-color 120ms ease, box-shadow 120ms ease;
+}
+.dvr-quickstat:hover { border-color: var(--dvr-blue-normal); box-shadow: var(--shadow-card); }
+.dvr-quickstat__icon {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: var(--dvr-blue-icon-bg); color: var(--dvr-blue-action);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.dvr-quickstat__icon svg { width: 20px; height: 20px; }
+.dvr-quickstat__title { font-size: 14px; font-weight: 700; color: var(--fg-heading); }
+.dvr-quickstat__sub   { font-size: 12px; color: var(--fg-secondary); display: flex; align-items: center; gap: 4px; }
+.dvr-quickstat__sub svg { width: 12px; height: 12px; }
+
+/* Two-column lower panels */
+.dvr-twocol { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+
+.dvr-panel {
+  background: #FFFFFF;
+  border-radius: 16px;
+  border: 1px solid var(--border-subtle);
+}
+.dvr-panel__head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.dvr-panel__title {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 16px; font-weight: 700; color: var(--fg-heading);
+}
+.dvr-panel__icon {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--dvr-blue-icon-bg); color: var(--dvr-blue-action);
+  display: flex; align-items: center; justify-content: center;
+}
+.dvr-panel__icon svg { width: 18px; height: 18px; }
+.dvr-panel__more {
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--dvr-blue-action);
+}
+.dvr-panel__more svg { width: 16px; height: 16px; }
+
+.dvr-panel__list { display: flex; flex-direction: column; padding: 6px 0 10px 0; }
+.dvr-panel__row {
+  display: grid;
+  grid-template-columns: 36px 1fr auto auto;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 18px;
+}
+.dvr-panel__row:hover { background: var(--surface-section); }
+.dvr-panel__name { font-size: 14px; color: var(--fg-primary); font-weight: 500; }
+.dvr-panel__date { font-size: 13px; color: var(--fg-primary); font-weight: 500; }
+.dvr-panel__action {
+  font-size: 13px; font-weight: 600;
+  color: var(--dvr-blue-action);
+  letter-spacing: 0.04em;
+}
+.dvr-panel__action:hover { text-decoration: underline; }
+
+.dvr-panel__empty {
+  padding: 28px 18px 32px 18px;
+  font-size: 14px;
+  color: var(--fg-secondary);
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   CREAR SESIONES — master/detail layout
+   ════════════════════════════════════════════════════════════════════════ */
+.dvr-create { display: flex; flex-direction: column; min-height: calc(100vh - 80px); }
+.dvr-create__layout {
+  display: grid;
+  grid-template-columns: minmax(360px, 1fr) minmax(440px, 1.4fr);
+  gap: 28px;
+  align-items: start;
+}
+.dvr-create__left  { display: flex; flex-direction: column; gap: 14px; }
+.dvr-create__right { display: flex; flex-direction: column; gap: 18px; padding-top: 12px; }
+
+.dvr-search__filter {
+  position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+  width: 32px; height: 32px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--dvr-blue-search-icon);
+}
+.dvr-search__filter:hover { background: var(--surface-section); color: var(--dvr-blue-action); }
+.dvr-search__filter svg { width: 18px; height: 18px; }
+
+.dvr-seslist { display: flex; flex-direction: column; gap: 10px; }
+.dvr-sescard {
+  position: relative;
+  display: flex; align-items: center; gap: 12px;
+  padding: 16px 18px;
+  border-radius: 14px;
+  background: #FFFFFF;
+  border: 1px solid var(--border-subtle);
+  text-align: left;
+  width: 100%;
+  transition: background 120ms ease, border-color 120ms ease;
+}
+.dvr-sescard:hover { border-color: var(--dvr-blue-normal); }
+.dvr-sescard.is-active {
+  background: var(--dvr-blue-section);
+  border-color: var(--dvr-blue-card-active);
+}
+.dvr-sescard.is-active::before {
+  content: ""; position: absolute; left: 0; top: 14px; bottom: 14px;
+  width: 3px; background: var(--dvr-blue-action); border-radius: 0 3px 3px 0;
+}
+.dvr-sescard__name { flex: 1; font-size: 15px; font-weight: 500; color: var(--fg-heading); }
+.dvr-sescard__progs { display: flex; gap: 4px; }
+.dvr-sescard__chev { width: 16px; height: 16px; color: var(--fg-secondary); }
+
+.dvr-progdot {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 22px; height: 22px;
+  border-radius: 999px;
+  color: #FFFFFF;
+  font-family: var(--font-display);
+  font-size: 11px; font-weight: 700;
+}
+
+/* Detail */
+.dvr-detail-head {
+  display: flex; justify-content: space-between; align-items: flex-end;
+  gap: 16px;
+}
+.dvr-detail-head__name {
+  font-family: var(--font-display);
+  font-weight: 700; font-size: 20px;
+  color: var(--fg-heading);
+}
+.dvr-detail-head__kicker { font-size: 13px; color: var(--fg-secondary); margin-top: 2px; }
+.dvr-close {
+  display: inline-flex; align-items: center; gap: 6px;
+  color: var(--fg-secondary);
+  font-size: 14px;
+  padding: 4px 6px;
+}
+.dvr-close svg { width: 18px; height: 18px; }
+.dvr-close:hover { color: var(--fg-heading); }
+
+.dvr-tarea-table { display: flex; flex-direction: column; }
+.dvr-tarea-table__head,
+.dvr-tarea-table__row {
+  display: grid;
+  grid-template-columns: minmax(160px, 1.4fr) 70px minmax(140px, 1.2fr) 60px 80px;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 6px;
+}
+.dvr-tarea-table__head {
+  font-size: 13px; color: var(--fg-secondary); font-weight: 500;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.dvr-tarea-table__row { border-bottom: 1px solid var(--border-subtle); }
+.dvr-tarea-table__row:last-child { border-bottom: 0; }
+.dvr-tarea-table__name { font-size: 14px; color: var(--fg-primary); font-weight: 500; }
+.dvr-tarea-table__num  { font-family: var(--font-display); font-size: 14px; color: var(--fg-primary); font-style: italic; }
+
+.dvr-tarea-total {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 16px 6px 12px 6px;
+  border-top: 1px solid var(--border-subtle);
+}
+.dvr-tarea-total__lbl { font-size: 15px; color: var(--fg-primary); }
+.dvr-tarea-total__val { font-size: 15px; color: var(--fg-primary); font-weight: 500; }
+
+.dvr-detail-actions { display: flex; gap: 12px; }
+.dvr-btn--wide-sm { min-width: 170px; }
+.dvr-btn--destructive {
+  background: var(--dvr-error); color: #FFFFFF; border: 1px solid var(--dvr-error);
+}
+.dvr-btn--destructive:hover { background: #C25551; border-color: #C25551; }
+
+.dvr-detail-empty { padding: 40px 6px; color: var(--fg-secondary); font-size: 14px; }
+
+/* ════════════════════════════════════════════════════════════════════════
+   STREAMING
+   ════════════════════════════════════════════════════════════════════════ */
+.dvr-stream {
+  display: flex; flex-direction: column;
+  gap: 36px;
+  padding-bottom: 32px;
+}
+.dvr-stream__h {
+  text-align: center;
+  font-family: var(--font-display);
+  font-weight: 700; font-size: 30px;
+  color: var(--fg-heading);
+  margin-top: 12px;
+  letter-spacing: -0.005em;
+}
+.dvr-stream__section { display: flex; flex-direction: column; gap: 22px; }
+.dvr-stream__lbl {
+  text-align: center;
+  font-size: 14px; color: var(--fg-primary);
+}
+.dvr-stream__lbl--center { font-weight: 500; }
+
+.dvr-stream__steps {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px 56px;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 24px;
+  width: 100%;
+}
+.dvr-step { display: flex; align-items: center; gap: 16px; }
+.dvr-step__icon {
+  width: 44px; height: 44px; border-radius: 50%;
+  background: var(--dvr-blue-icon-bg); color: var(--dvr-blue-action);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.dvr-step__icon svg { width: 22px; height: 22px; }
+.dvr-step__txt { font-size: 14px; color: var(--fg-primary); line-height: 1.45; }
+.dvr-step__txt strong { color: var(--fg-heading); font-weight: 700; }
+
+.dvr-stream__choices {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  max-width: 920px;
+  margin: 0 auto;
+  width: 100%;
+}
+.dvr-choice {
+  background: #FFFFFF;
+  border-radius: 16px;
+  border: 1px solid var(--border-subtle);
+  padding: 22px 24px 24px 24px;
+  display: flex; flex-direction: column; gap: 14px;
+}
+.dvr-choice__head { display: flex; align-items: center; gap: 16px; }
+.dvr-choice__icon {
+  width: 60px; height: 60px; border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  color: #FFFFFF;
+}
+.dvr-choice__icon svg { width: 28px; height: 28px; }
+.dvr-choice__icon--gray { background: #C7C7C7; }
+.dvr-choice__icon--blue { background: var(--dvr-blue-action); }
+.dvr-choice__title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 20px;
+  color: var(--fg-heading);
+}
+.dvr-choice__copy {
+  font-size: 14px;
+  color: var(--fg-primary);
+  line-height: 1.5;
+  min-height: 42px;
+}
+.dvr-choice__cta { width: 100%; }
+.dvr-choice__cta--gray {
+  background: #C7C7C7; color: #FFFFFF; border-color: #C7C7C7;
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   ACADEMY
+   ════════════════════════════════════════════════════════════════════════ */
+.dvr-academy { display: flex; flex-direction: column; gap: 18px; }
+.dvr-academy__greet { padding: 4px 4px 0 4px; }
+.dvr-academy__h {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 30px;
+  color: var(--fg-heading);
+  letter-spacing: -0.005em;
+}
+.dvr-academy__h strong { font-weight: 700; }
+.dvr-wave { display: inline-block; transform-origin: 70% 70%; }
+.dvr-academy__sub { font-size: 14px; color: var(--fg-primary); margin-top: 6px; }
+
+.dvr-academy__stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+.dvr-stat {
+  display: flex; align-items: center; gap: 14px;
+  padding: 16px 18px;
+  background: #FFFFFF;
+  border-radius: 14px;
+  border: 1px solid var(--border-subtle);
+}
+.dvr-stat__icon {
+  width: 44px; height: 44px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+}
+.dvr-stat__icon svg { width: 22px; height: 22px; }
+.dvr-stat__body { flex: 1; }
+.dvr-stat__label { font-size: 13px; color: var(--fg-secondary); }
+.dvr-stat__value { font-family: var(--font-display); font-weight: 700; font-size: 24px; color: var(--fg-heading); letter-spacing: -0.005em; margin-top: 2px; }
+.dvr-stat__chev { color: var(--dvr-blue-action); }
+.dvr-stat__chev svg { width: 18px; height: 18px; }
+
+.dvr-academy__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(280px, 1fr);
+  grid-template-rows: auto auto;
+  gap: 16px;
+}
+.dvr-academy__activity { grid-row: 1; padding: 18px 22px; display: flex; flex-direction: column; gap: 16px; min-height: 220px; }
+.dvr-academy__level    { grid-row: 1 / span 2; align-self: stretch; }
+.dvr-academy__lesson   { grid-row: 2; grid-column: 1; }
+.dvr-academy__achievements { grid-row: 3; grid-column: 1 / span 2; padding: 18px 22px; }
+
+/* Activity */
+.dvr-academy__activity-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.dvr-academy__activity-lbl { font-size: 15px; color: var(--fg-heading); font-weight: 600; }
+.dvr-academy__activity-val { display: flex; align-items: baseline; gap: 8px; margin-top: 6px; }
+.dvr-academy__activity-val span:first-child { font-family: var(--font-display); font-weight: 700; font-size: 32px; color: var(--dvr-blue-action); letter-spacing: -0.005em; }
+.dvr-academy__activity-val span:last-child { font-size: 14px; color: var(--fg-secondary); }
+.dvr-academy__delta {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 10px; border-radius: 999px;
+  background: #D1FADF; color: #03603D;
+  font-size: 12px; font-weight: 600;
+}
+.dvr-academy__delta svg { width: 14px; height: 14px; }
+
+.dvr-weekly {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 14px;
+  height: 140px;
+  align-items: end;
+  padding: 0 4px;
+}
+.dvr-weekly__col { display: flex; flex-direction: column; gap: 8px; height: 100%; }
+.dvr-weekly__bar-wrap { flex: 1; display: flex; align-items: flex-end; }
+.dvr-weekly__bar {
+  width: 100%;
+  background: var(--dvr-blue-chip);
+  border-radius: 8px 8px 4px 4px;
+  min-height: 6px;
+}
+.dvr-weekly__bar.is-strong { background: linear-gradient(180deg, #4385FA, #2F76F7); }
+.dvr-weekly__day { text-align: center; font-size: 12px; color: var(--fg-secondary); }
+
+/* Level */
+.dvr-academy__level {
+  background: linear-gradient(155deg, #3B82F7 0%, #2F76F7 55%, #2657CA 100%);
+  color: #FFFFFF;
+  border-radius: 18px;
+  padding: 20px 22px;
+  display: flex; flex-direction: column; gap: 18px;
+  border: 0;
+}
+.dvr-academy__level-lbl { font-size: 12px; opacity: 0.85; }
+.dvr-academy__level-row { display: flex; align-items: center; gap: 16px; }
+.dvr-academy__level-badge {
+  width: 56px; height: 56px; border-radius: 12px;
+  background: rgba(255,255,255,0.18);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display); font-weight: 700; font-size: 26px;
+  color: #FFFFFF;
+}
+.dvr-academy__level-title { font-family: var(--font-display); font-weight: 700; font-size: 19px; }
+.dvr-academy__level-sub { font-size: 13px; opacity: 0.85; margin-top: 2px; }
+.dvr-academy__xp { display: flex; flex-direction: column; gap: 8px; padding: 16px 0; border-top: 1px solid rgba(255,255,255,0.18); border-bottom: 1px solid rgba(255,255,255,0.18); }
+.dvr-academy__xp-row { display: flex; justify-content: space-between; font-size: 13px; }
+.dvr-academy__xp-bar { height: 6px; background: rgba(255,255,255,0.22); border-radius: 999px; overflow: hidden; }
+.dvr-academy__xp-bar > div { height: 100%; background: #FFFFFF; border-radius: 999px; }
+.dvr-academy__next-lbl { font-size: 12px; opacity: 0.85; }
+.dvr-academy__next-row { display: flex; justify-content: space-between; font-size: 13px; font-weight: 500; margin-top: 4px; }
+
+/* Lesson card */
+.dvr-academy__lesson {
+  background: linear-gradient(135deg, #3B82F7 0%, #2F76F7 100%);
+  color: #FFFFFF;
+  border-radius: 18px;
+  padding: 18px 18px;
+  display: flex; flex-direction: column; gap: 14px;
+}
+.dvr-academy__lesson-kicker {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 13px; font-weight: 600; opacity: 0.9;
+}
+.dvr-academy__dot { width: 7px; height: 7px; border-radius: 50%; background: #FFFFFF; }
+.dvr-academy__lesson-body { display: grid; grid-template-columns: 180px 1fr; gap: 18px; align-items: center; }
+.dvr-academy__lesson-thumb {
+  position: relative;
+  height: 110px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #E4ECF6;
+}
+.dvr-academy__lesson-img {
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, #E4ECF6, #C8D8EC);
+}
+.dvr-academy__lesson-img::after {
+  content: ""; position: absolute; left: 25%; top: 30%; width: 50%; height: 50%;
+  background: rgba(43,54,116,0.18);
+  border-radius: 6px;
+}
+.dvr-academy__play {
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  width: 52px; height: 52px; border-radius: 50%;
+  background: rgba(255,255,255,0.9); color: var(--dvr-blue-action);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.16);
+}
+.dvr-academy__play svg { width: 22px; height: 22px; margin-left: 3px; }
+.dvr-academy__lesson-meta { display: flex; flex-direction: column; gap: 6px; }
+.dvr-academy__lesson-sub { font-size: 12px; opacity: 0.85; }
+.dvr-academy__lesson-title { font-family: var(--font-display); font-weight: 700; font-size: 19px; }
+.dvr-academy__lesson-progress { display: flex; align-items: center; gap: 6px; font-size: 12px; opacity: 0.92; margin-top: 2px; }
+.dvr-academy__lesson-progress svg { width: 14px; height: 14px; }
+.dvr-academy__lesson-sep { opacity: 0.6; }
+.dvr-academy__continue {
+  margin-top: 8px;
+  align-self: stretch;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  height: 40px;
+  border-radius: 8px;
+  background: #FFFFFF;
+  color: var(--dvr-blue-action);
+  font-weight: 600; font-size: 14px;
+}
+.dvr-academy__continue svg { width: 14px; height: 14px; }
+
+/* Achievements */
+.dvr-academy__ach-head { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
+.dvr-academy__ach-count {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 10px;
+  background: var(--dvr-blue-chip);
+  color: var(--dvr-blue-action);
+  border-radius: 8px;
+  font-weight: 700; font-size: 14px;
+}
+.dvr-academy__ach-count svg { width: 16px; height: 16px; }
+.dvr-academy__ach-title { font-size: 15px; font-weight: 700; color: var(--fg-heading); }
+.dvr-academy__ach-sub   { font-size: 12px; color: var(--fg-secondary); margin-top: 2px; }
+.dvr-academy__ach-grid {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 10px;
+}
+.dvr-academy__ach-cell {
+  aspect-ratio: 1;
+  background: var(--surface-section);
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--fg-tertiary);
+}
+.dvr-academy__ach-cell svg { width: 22px; height: 22px; }
+.dvr-academy__ach-cell.is-on { background: var(--dvr-blue-action); color: #FFFFFF; }

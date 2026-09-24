@@ -1,0 +1,17 @@
+{
+  "name": "cafe-virtual",
+  "version": "0.1.0",
+  "description": "Espacio virtual tipo Gather para el café de la empresa (proximidad + WebRTC)",
+  "type": "module",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node --watch server/index.js"
+  },
+  "engines": {
+    "node": ">=20 <21"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "socket.io": "^4.7.5"
+  }
+}
