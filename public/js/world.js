@@ -89,142 +89,74 @@ export class World {
     this.path = path.length ? path : null;
   }
 
-  // ---------- construcción del decorado ----------
+  // ---------- construcción del decorado (minimalista claro) ----------
   _buildRooms() {
-    // Un ÚNICO plano de oficina: suelo continuo, tintes por sala, mobiliario,
-    // y muros (generados desde WALLS) con huecos de puerta.
-    const walls = WALLS.map((w) =>
-      `<div style="position:absolute;left:${w.x}px;top:${w.y}px;width:${w.w}px;height:${w.h}px;background:#B4BFDA;border-radius:5px;box-shadow:0 1px 2px rgba(43,54,116,0.12);"></div>`
-    ).join('');
-
-    const doors = DOORS.map((d) =>
-      `<div style="position:absolute;left:${d.x - 8}px;top:${d.y}px;width:${d.w + 16}px;height:${d.h}px;background:#F3E4C6;border-radius:4px;box-shadow:inset 0 0 0 2px #E7D3AC;"></div>`
-    ).join('');
-
-    // Helpers de mobiliario animado.
-    const plant = (x, y, s = 1, slow = false) => `
-      <div style="position:absolute;left:${x}px;top:${y}px;width:${28 * s}px;height:${44 * s}px;">
-        <div class="plant${slow ? ' slow' : ''}" style="position:absolute;left:50%;bottom:${16 * s}px;transform:translateX(-50%);width:${26 * s}px;height:${32 * s}px;background:radial-gradient(circle at 50% 65%, #59C083, #2E8B57);border-radius:52% 52% 44% 44%;box-shadow:inset -3px -4px 6px rgba(0,0,0,0.15);"></div>
-        <div style="position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:${20 * s}px;height:${18 * s}px;background:linear-gradient(180deg,#D89A6A,#B9764A);border-radius:3px 3px 6px 6px;"></div>
+    // Helpers de formas suaves.
+    const soft = (x, y, w, h, color, r = 16, extra = '') =>
+      `<div style="position:absolute;left:${x}px;top:${y}px;width:${w}px;height:${h}px;border-radius:${r}px;background:${color};box-shadow:0 6px 16px rgba(43,54,116,0.07);${extra}"></div>`;
+    const flat = (x, y, w, h, color, r = 999) =>
+      `<div style="position:absolute;left:${x}px;top:${y}px;width:${w}px;height:${h}px;border-radius:${r}px;background:${color};"></div>`;
+    const label = (x, y, txt) =>
+      `<div style="position:absolute;left:${x}px;top:${y}px;font-size:12px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:#8A92AE;">${txt}</div>`;
+    const plant = (x, y, s = 1) => `
+      <div style="position:absolute;left:${x}px;top:${y}px;width:${24 * s}px;height:${36 * s}px;">
+        <div class="plant" style="position:absolute;left:50%;bottom:${12 * s}px;transform:translateX(-50%);width:${22 * s}px;height:${26 * s}px;background:radial-gradient(circle at 50% 60%, #86D3A6, #55B584);border-radius:50% 50% 46% 46%;"></div>
+        <div style="position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:${15 * s}px;height:${13 * s}px;background:#E7DACb;border-radius:4px 4px 6px 6px;box-shadow:0 3px 8px rgba(43,54,116,0.08);"></div>
       </div>`;
-    const steam = (x, y) => `
-      <div class="steam" style="left:${x}px;top:${y}px;animation-delay:0s;"></div>
-      <div class="steam" style="left:${x + 6}px;top:${y - 3}px;animation-delay:.9s;"></div>
-      <div class="steam" style="left:${x - 5}px;top:${y - 1}px;animation-delay:1.7s;"></div>`;
-    const window_ = (x) => `
-      <div style="position:absolute;left:${x}px;top:21px;width:92px;height:11px;border-radius:3px;background:linear-gradient(90deg,#CDEBFF,#A9D8FF);box-shadow:inset 0 0 0 2px #fff, 0 0 8px rgba(143,204,255,0.6);"></div>`;
+
+    const walls = WALLS.map((w) =>
+      `<div style="position:absolute;left:${w.x}px;top:${w.y}px;width:${w.w}px;height:${w.h}px;background:#E0E6F3;border-radius:7px;box-shadow:0 1px 2px rgba(43,54,116,0.05);"></div>`
+    ).join('');
+    const doors = DOORS.map((d) =>
+      `<div style="position:absolute;left:${d.x - 7}px;top:${d.y}px;width:${d.w + 14}px;height:${d.h}px;background:#F5E9D2;border-radius:7px;"></div>`
+    ).join('');
 
     const html = `
-      <!-- Suelo único del edificio -->
-      <div style="position:absolute;left:20px;top:20px;width:1140px;height:660px;border-radius:20px;background:#E7ECF7;box-shadow:inset 0 0 40px rgba(112,144,176,0.12);"></div>
-      <!-- Textura sutil de baldosa -->
-      <div style="position:absolute;left:20px;top:20px;width:1140px;height:660px;border-radius:20px;opacity:.5;background-image:linear-gradient(rgba(255,255,255,0.5) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.5) 1px,transparent 1px);background-size:40px 40px;"></div>
+      <!-- Suelo -->
+      ${soft(20, 20, 1140, 660, 'linear-gradient(160deg,#F7F9FD,#EEF2FA)', 28, 'box-shadow:inset 0 0 60px rgba(112,144,176,0.06);')}
 
-      <!-- Tintes por sala -->
-      <div style="position:absolute;left:32px;top:32px;width:388px;height:306px;border-radius:14px;background:#E6F6FF;"></div>
-      <div style="position:absolute;left:766px;top:32px;width:382px;height:306px;border-radius:14px;background:#E9EDFF;"></div>
-      <div style="position:absolute;left:32px;top:362px;width:388px;height:306px;border-radius:14px;background:#F1EEFE;"></div>
-
-      <!-- Ventanas en la pared superior -->
-      ${window_(140)} ${window_(300)} ${window_(880)} ${window_(1020)}
-
-      <!-- ══ Pasillo / plaza central ══ -->
-      <div style="position:absolute;left:470px;top:300px;width:250px;height:150px;border-radius:999px;background:#E5F6E9;"></div>
-      <!-- fuente -->
-      <div style="position:absolute;left:545px;top:335px;width:100px;height:80px;border-radius:999px;background:#BFE3E0;box-shadow:inset 0 0 0 5px #A6D3CF;"></div>
-      <div class="water" style="position:absolute;left:565px;top:348px;width:60px;height:52px;border-radius:999px;background:radial-gradient(circle,#8FD4E8,#5FB8D6);"></div>
-      <div style="position:absolute;left:512px;top:250px;font-size:12px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:#8A93AE;">PLAZA</div>
-      <!-- sofás -->
-      <div style="position:absolute;left:470px;top:470px;width:90px;height:30px;border-radius:10px;background:#9FB0E6;box-shadow:inset 0 4px 0 #B4C2EE;"></div>
-      <div style="position:absolute;left:640px;top:250px;width:30px;height:80px;border-radius:10px;background:#9FB0E6;box-shadow:inset 4px 0 0 #B4C2EE;"></div>
-      ${plant(474, 250, 1)} ${plant(700, 470, 1.1, true)}
-      <!-- tablón zona abierta -->
-      <div style="position:absolute;left:800px;top:520px;width:300px;height:110px;border-radius:12px;background:#fff;border:2px solid #DDE3F3;box-shadow:0 2px 8px rgba(112,144,176,0.14);"></div>
-      <div style="position:absolute;left:820px;top:536px;font-size:12px;font-weight:700;color:#2B3674;">📌 Tablón</div>
-      <div style="position:absolute;left:820px;top:560px;width:80px;height:44px;border-radius:4px;background:#FFF3D6;transform:rotate(-3deg);box-shadow:0 1px 3px rgba(0,0,0,.12);"></div>
-      <div style="position:absolute;left:910px;top:562px;width:80px;height:44px;border-radius:4px;background:#DDF0FF;transform:rotate(2deg);box-shadow:0 1px 3px rgba(0,0,0,.12);"></div>
-      <div style="position:absolute;left:1000px;top:558px;width:80px;height:44px;border-radius:4px;background:#E6F7E9;transform:rotate(-1deg);box-shadow:0 1px 3px rgba(0,0,0,.12);"></div>
-      <div style="position:absolute;left:826px;top:566px;font-size:9px;color:#7A6A3A;">Café 11:00</div>
+      <!-- Zonas (tintes suaves) -->
+      ${soft(34, 34, 384, 302, '#E9F2FE', 22)}
+      ${soft(768, 34, 378, 302, '#ECEFFB', 22)}
+      ${soft(34, 364, 384, 302, '#F1ECFC', 22)}
 
       <!-- ══ Cafetería ══ -->
-      <div style="position:absolute;left:48px;top:48px;font-size:15px;font-weight:700;color:#2B3674;">☕ Cafetería</div>
-      <!-- barra -->
-      <div style="position:absolute;left:56px;top:150px;width:230px;height:56px;border-radius:8px;background:linear-gradient(180deg,#A9805C,#8B6544);"></div>
-      <div style="position:absolute;left:52px;top:146px;width:238px;height:12px;border-radius:6px;background:#C8A784;"></div>
-      <!-- máquina de café -->
-      <div style="position:absolute;left:96px;top:96px;width:74px;height:58px;border-radius:8px;background:linear-gradient(180deg,#4A4A48,#2E2E2C);box-shadow:inset 0 3px 0 #6a6a68;"></div>
-      <div style="position:absolute;left:104px;top:104px;width:58px;height:18px;border-radius:4px;background:#D3F2FF;opacity:.9;"></div>
-      <div style="position:absolute;left:116px;top:140px;width:8px;height:12px;background:#6a6a68;"></div>
-      <div style="position:absolute;left:142px;top:140px;width:8px;height:12px;background:#6a6a68;"></div>
-      ${steam(120, 88)} ${steam(146, 88)}
-      <!-- tazas en la barra -->
-      <div style="position:absolute;left:196px;top:158px;width:16px;height:14px;border-radius:0 0 6px 6px;background:#fff;box-shadow:0 0 0 2px #CFE2E2;"></div>
-      <div style="position:absolute;left:224px;top:158px;width:16px;height:14px;border-radius:0 0 6px 6px;background:#fff;box-shadow:0 0 0 2px #CFE2E2;"></div>
-      <!-- vitrina de bollería -->
-      <div style="position:absolute;left:250px;top:96px;width:120px;height:50px;border-radius:8px;background:rgba(211,242,255,0.5);border:2px solid #B9D9E8;"></div>
-      <div style="position:absolute;left:262px;top:118px;width:20px;height:18px;border-radius:50% 50% 40% 40%;background:#E7B769;"></div>
-      <div style="position:absolute;left:292px;top:120px;width:22px;height:16px;border-radius:6px;background:#D98C5A;"></div>
-      <div style="position:absolute;left:326px;top:118px;width:20px;height:18px;border-radius:50% 50% 40% 40%;background:#E7B769;"></div>
-      <!-- taburetes -->
-      <div style="position:absolute;left:96px;top:236px;width:34px;height:34px;border-radius:999px;background:#F4F7FE;box-shadow:0 3px 6px rgba(0,0,0,.12),inset 0 0 0 3px #479DFD;"></div>
-      <div style="position:absolute;left:170px;top:236px;width:34px;height:34px;border-radius:999px;background:#F4F7FE;box-shadow:0 3px 6px rgba(0,0,0,.12),inset 0 0 0 3px #479DFD;"></div>
+      ${label(56, 54, 'Cafetería')}
+      ${flat(70, 250, 150, 96, '#DCEAFB', 60)}            <!-- alfombra -->
+      ${soft(70, 110, 190, 44, '#CFE0FA', 14)}            <!-- barra -->
+      ${soft(96, 96, 52, 34, '#B9CDF0', 12)}              <!-- cafetera -->
+      ${flat(200, 116, 16, 16, '#EAF1FD')} ${flat(224, 116, 16, 16, '#EAF1FD')}
+      ${flat(104, 250, 30, 30, '#C6D7F4')} ${flat(150, 258, 30, 30, '#C6D7F4')}  <!-- taburetes -->
       ${plant(360, 250, 1.1)}
-      <!-- lámpara colgante -->
-      <div style="position:absolute;left:150px;top:60px;width:2px;height:24px;background:#8A93AE;"></div>
-      <div class="hang" style="position:absolute;left:138px;top:82px;width:26px;height:16px;border-radius:0 0 40% 40%;background:linear-gradient(180deg,#FDE9B8,#F3C969);box-shadow:0 0 14px rgba(243,201,105,0.7);"></div>
 
-      <!-- ══ Sala de reuniones ══ -->
-      <div style="position:absolute;left:786px;top:48px;font-size:15px;font-weight:700;color:#2B3674;">🖥️ Sala de reuniones</div>
-      <!-- mesa -->
-      <div style="position:absolute;left:872px;top:150px;width:200px;height:96px;border-radius:44px;background:linear-gradient(180deg,#E4ECFB,#CBD9F3);box-shadow:inset 0 0 0 3px #B9CBEE;"></div>
-      <!-- sillas -->
-      <div style="position:absolute;left:892px;top:126px;width:26px;height:18px;border-radius:6px;background:#8FA6DE;"></div>
-      <div style="position:absolute;left:952px;top:122px;width:26px;height:18px;border-radius:6px;background:#8FA6DE;"></div>
-      <div style="position:absolute;left:1012px;top:126px;width:26px;height:18px;border-radius:6px;background:#8FA6DE;"></div>
-      <div style="position:absolute;left:892px;top:250px;width:26px;height:18px;border-radius:6px;background:#8FA6DE;"></div>
-      <div style="position:absolute;left:952px;top:254px;width:26px;height:18px;border-radius:6px;background:#8FA6DE;"></div>
-      <div style="position:absolute;left:1012px;top:250px;width:26px;height:18px;border-radius:6px;background:#8FA6DE;"></div>
-      <!-- pantalla en pared con "slide" -->
-      <div style="position:absolute;left:966px;top:60px;width:132px;height:68px;border-radius:8px;background:#22305C;box-shadow:0 4px 12px rgba(41,96,195,0.35),inset 0 0 0 3px #3B4A7A;padding:8px;">
-        <div style="width:60%;height:8px;border-radius:2px;background:#5FA8FF;margin:4px 0;"></div>
-        <div style="display:flex;gap:4px;align-items:flex-end;height:30px;margin-top:6px;">
-          <div style="width:10px;height:16px;background:#4D75B5;border-radius:2px;"></div>
-          <div style="width:10px;height:26px;background:#28B5E1;border-radius:2px;"></div>
-          <div style="width:10px;height:12px;background:#94DAF0;border-radius:2px;"></div>
-          <div style="width:10px;height:22px;background:#5FA8FF;border-radius:2px;"></div>
-        </div>
-      </div>
-      <!-- pizarra -->
-      <div style="position:absolute;left:790px;top:120px;width:64px;height:80px;border-radius:6px;background:#fff;border:2px solid #C9D6F5;"></div>
-      <div style="position:absolute;left:800px;top:134px;width:40px;height:4px;border-radius:2px;background:#D86761;"></div>
-      <div style="position:absolute;left:800px;top:146px;width:30px;height:4px;border-radius:2px;background:#2960C3;"></div>
-      <div style="position:absolute;left:800px;top:170px;width:44px;height:4px;border-radius:2px;background:#12B76A;"></div>
-      ${plant(1096, 270, 1.1, true)}
+      <!-- ══ Reuniones ══ -->
+      ${label(792, 54, 'Reuniones')}
+      ${soft(884, 150, 190, 92, '#DCE3F6', 46)}           <!-- mesa -->
+      ${flat(902, 128, 24, 18, '#C6D1EE', 8)} ${flat(960, 124, 24, 18, '#C6D1EE', 8)} ${flat(1018, 128, 24, 18, '#C6D1EE', 8)}
+      ${flat(902, 250, 24, 18, '#C6D1EE', 8)} ${flat(960, 254, 24, 18, '#C6D1EE', 8)} ${flat(1018, 250, 24, 18, '#C6D1EE', 8)}
+      ${soft(986, 66, 110, 52, '#CBD6F2', 10)}            <!-- pantalla -->
+      ${flat(1000, 82, 60, 8, '#AFC0EC', 4)} ${flat(1000, 96, 44, 8, '#AFC0EC', 4)}
+      ${plant(1102, 262, 1.1)}
 
-      <!-- ══ Sala de juegos ══ -->
-      <div style="position:absolute;left:48px;top:376px;font-size:15px;font-weight:700;color:#2B3674;">🎮 Sala de juegos</div>
-      <div class="neon" style="position:absolute;left:250px;top:378px;font-size:16px;font-weight:800;color:#F3A257;">ARCADE</div>
-      <!-- recreativas -->
-      <div style="position:absolute;left:62px;top:440px;width:72px;height:120px;border-radius:12px 12px 6px 6px;background:linear-gradient(180deg,#5B4BC4,#3C2F8E);"></div>
-      <div class="arcade-screen" style="position:absolute;left:74px;top:456px;width:48px;height:38px;border-radius:4px;background:linear-gradient(135deg,#7DE3FF,#7B6AE2);"></div>
-      <div style="position:absolute;left:80px;top:506px;width:36px;height:6px;border-radius:3px;background:#2B2270;"></div>
-      <div style="position:absolute;left:84px;top:516px;width:12px;height:12px;border-radius:999px;background:#F3A257;"></div>
-      <div style="position:absolute;left:104px;top:518px;width:8px;height:8px;border-radius:999px;background:#D86761;"></div>
-      <div style="position:absolute;left:150px;top:440px;width:72px;height:120px;border-radius:12px 12px 6px 6px;background:linear-gradient(180deg,#C86BA6,#8E3F73);"></div>
-      <div class="arcade-screen" style="position:absolute;left:162px;top:456px;width:48px;height:38px;border-radius:4px;background:linear-gradient(135deg,#FFD27D,#F37EA2);animation-delay:.6s;"></div>
-      <div style="position:absolute;left:168px;top:506px;width:36px;height:6px;border-radius:3px;background:#5A2247;"></div>
-      <div style="position:absolute;left:172px;top:516px;width:12px;height:12px;border-radius:999px;background:#FABC1E;"></div>
-      <!-- futbolín -->
-      <div style="position:absolute;left:250px;top:470px;width:130px;height:80px;border-radius:10px;background:linear-gradient(180deg,#2E8B57,#256F46);box-shadow:inset 0 0 0 4px #5B4030;"></div>
-      <div style="position:absolute;left:250px;top:506px;width:130px;height:4px;background:rgba(255,255,255,.5);"></div>
-      <div style="position:absolute;left:312px;top:470px;width:4px;height:80px;background:rgba(255,255,255,.4);"></div>
-      <div style="position:absolute;left:300px;top:490px;width:8px;height:40px;background:#C7C7C7;"></div>
-      <div style="position:absolute;left:340px;top:490px;width:8px;height:40px;background:#C7C7C7;"></div>
-      <!-- diana -->
-      <div style="position:absolute;left:352px;top:410px;width:40px;height:40px;border-radius:999px;background:radial-gradient(circle,#D86761 0 22%,#fff 22% 45%,#12B76A 45% 70%,#fff 70% 100%);box-shadow:0 2px 6px rgba(0,0,0,.15);"></div>
-      <!-- puf -->
-      <div style="position:absolute;left:70px;top:590px;width:60px;height:44px;border-radius:50% 50% 45% 45%;background:#B9A9F0;box-shadow:inset -4px -6px 10px rgba(0,0,0,.12);"></div>
+      <!-- ══ Juegos ══ -->
+      ${label(56, 384, 'Juegos')}
+      ${flat(60, 596, 200, 50, '#E4DAF7', 40)}            <!-- alfombra -->
+      ${soft(70, 448, 62, 104, '#DAD0F5', 14)}            <!-- recreativa 1 -->
+      ${flat(82, 462, 38, 34, '#C8BAF0', 8)}
+      ${soft(150, 448, 62, 104, '#ECD8EE', 14)}           <!-- recreativa 2 -->
+      ${flat(162, 462, 38, 34, '#E2C0E6', 8)}
+      ${soft(258, 470, 120, 78, '#E0D6F7', 16)}           <!-- mesa juego -->
       ${plant(360, 590, 1)}
+
+      <!-- ══ Plaza / pasillo ══ -->
+      ${flat(486, 300, 220, 150, '#E9F3EE', 80)}          <!-- alfombra -->
+      ${flat(548, 336, 96, 78, '#DCEBE7')}                <!-- fuente base -->
+      <div class="water" style="position:absolute;left:570px;top:352px;width:52px;height:46px;border-radius:999px;background:radial-gradient(circle,#CDE9EE,#A9D6E0);"></div>
+      ${label(524, 250, 'Plaza')}
+      ${soft(470, 470, 96, 26, '#D9E0F4', 13)}            <!-- banco -->
+      ${plant(700, 468, 1.1)}
+      ${soft(852, 544, 236, 76, '#FFFFFF', 16)}           <!-- cartel limpio -->
+      ${label(872, 566, 'Café · 11:00')}
 
       ${doors}
       ${walls}
