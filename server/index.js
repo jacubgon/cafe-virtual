@@ -87,8 +87,8 @@ app.get('/ice', async (req, res) => {
 // id -> { id, name, body, color, vr, x, y, muted, camOff }
 const players = new Map();
 
-// Punto de aparición: la plaza central del mapa (coincide con world.js).
-const SPAWN = { x: 590, y: 380 };
+// Punto de aparición: pasillo/plaza, despejado (encima de la fuente central).
+const SPAWN = { x: 590, y: 240 };
 
 function sanitize(p = {}) {
   return {
@@ -205,7 +205,7 @@ io.on('connection', (socket) => {
   socket.on('zone', (zone) => {
     const p = players.get(socket.id);
     if (!p) return;
-    const z = ['cafe', 'meet', 'games', 'plaza'].includes(zone) ? zone : 'plaza';
+    const z = ['cafe', 'meet', 'games', 'quiet', 'plaza'].includes(zone) ? zone : 'plaza';
     const prev = p.zone;
     p.zone = z;
     socket.broadcast.emit('player-zone', { id: socket.id, zone: z });

@@ -190,9 +190,7 @@ html, body {
   0%   { transform: translate(-50%, -50%) scale(0.55); opacity: 0.55; }
   100% { transform: translate(-50%, -50%) scale(1.5); opacity: 0; }
 }
-.avatar-inner { transform-origin: bottom center; animation: breathe 3.4s ease-in-out infinite; }
-.avatar-inner.walking { animation: bob 0.42s ease-in-out infinite; }
-.avatar-shadow { position: absolute; left: 50%; bottom: -4px; transform: translateX(-50%); width: 28px; height: 9px; border-radius: 50%; background: rgba(43,54,116,0.22); filter: blur(1.5px); }
+.avatar-inner { position: absolute; inset: 0; }
 .talk-ring { position: absolute; left: 50%; top: 45%; width: 52px; height: 52px; border-radius: 50%; border: 3px solid #12B76A; opacity: 0; pointer-events: none; }
 .avatar.talking .talk-ring { animation: talkPulse 1.15s ease-out infinite; }
 .mute-badge { position: absolute; right: -2px; top: 2px; font-size: 12px; opacity: 0; }

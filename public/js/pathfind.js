@@ -2,12 +2,12 @@
 // Permite que el "clic para caminar" calcule la ruta y cruce las puertas solo,
 // en vez de ir en línea recta y chocar.
 
-import { W, H, blocked } from './avatar.js';
+import { W, H, blocked } from './escenario.js';
 
 const CELL = 20;
 const COLS = Math.ceil(W / CELL);
 const ROWS = Math.ceil(H / CELL);
-const MARGIN = 11; // radio con el que evaluamos muros (avatar ~9 + colchón)
+const MARGIN = 16; // radio con el que evaluamos muros/muebles (avatar AR≈14 + colchón)
 
 const cx = (c) => c * CELL + CELL / 2;
 const cy = (r) => r * CELL + CELL / 2;

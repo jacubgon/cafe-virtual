@@ -1,106 +1,97 @@
-// Constantes del mundo + construcción de avatares "muñeco", portado del diseño
-// de Claude Design (Oficina Virtual) para mantener la fidelidad visual.
+// Avatar v2 — figura chibi con 4 direcciones, paso animado y peinados.
+// API: avatarParts(opts) -> [[capa, estilo], ...]  ·  renderAvatar(wrap, opts)
+// Compatibilidad: avatarParts(color, body, vr) sigue funcionando (body -> piel + pelo).
 
-export const W = 1180;
-export const H = 700;
-export const RADIUS = 150; // radio de proximidad (px del mundo)
-
-// Salas del mapa, ahora como habitaciones de un ÚNICO plano de oficina.
-// "nearby" = dentro del radio O en la misma sala (no plaza/pasillo).
-// Cada sala comparte muros con el pasillo central y conecta por una puerta.
-export const ROOMS = [
-  { id: 'cafe', name: 'Cafetería', x: 20, y: 20, w: 410, h: 330,
-    hint: 'Máquina de café, mesa alta y dos taburetes. Se oye a todos los que están dentro.' },
-  { id: 'meet', name: 'Sala de reuniones', x: 760, y: 20, w: 400, h: 330,
-    hint: 'Mesa grande para cuando la pausa se alarga y alguien saca el portátil.' },
-  { id: 'games', name: 'Sala de juegos', x: 20, y: 350, w: 410, h: 330,
-    hint: 'Dos recreativas y la mesa de quiz. (Los minijuegos llegan en la fase 2.)' },
-];
-
-// Muros sólidos (segmentos). Los huecos entre segmentos son las PUERTAS.
-// Se usan tanto para dibujar como para la colisión, así siempre coinciden.
-export const WALLS = [
-  // Contorno del edificio (rectángulo único)
-  { x: 20, y: 20, w: 1140, h: 12 },   // arriba
-  { x: 20, y: 668, w: 1140, h: 12 },  // abajo
-  { x: 20, y: 20, w: 12, h: 660 },    // izquierda
-  { x: 1148, y: 20, w: 12, h: 660 },  // derecha
-  // Muro vertical x≈430 (izquierda | pasillo). Puertas: y180-250 y y470-540
-  { x: 424, y: 20, w: 12, h: 160 },
-  { x: 424, y: 250, w: 12, h: 220 },
-  { x: 424, y: 540, w: 12, h: 140 },
-  // Muro vertical x≈760 (pasillo | reuniones), solo arriba. Puerta: y150-220
-  { x: 754, y: 20, w: 12, h: 130 },
-  { x: 754, y: 220, w: 12, h: 130 },
-  // Muro horizontal y≈350 izquierda (cafetería | sala de juegos)
-  { x: 20, y: 344, w: 416, h: 12 },
-  // Muro horizontal y≈350 derecha (reuniones | plaza inferior)
-  { x: 754, y: 344, w: 406, h: 12 },
-];
-
-// Puertas (solo decorativas: felpudo/umbral en cada hueco de muro).
-export const DOORS = [
-  { x: 424, y: 185, w: 12, h: 60 },   // cafetería ↔ pasillo
-  { x: 424, y: 475, w: 12, h: 60 },   // sala de juegos ↔ pasillo
-  { x: 754, y: 155, w: 12, h: 60 },   // reuniones ↔ pasillo
-];
-
-// ¿Está el punto (x,y) con radio r dentro de algún muro?
-export function blocked(x, y, r = 9) {
-  for (const w of WALLS) {
-    if (x > w.x - r && x < w.x + w.w + r && y > w.y - r && y < w.y + w.h + r) return true;
-  }
-  return false;
-}
-
-export const SKIN = ['#F2C9A8', '#E0A87C', '#C98A5E', '#8D5A3B'];
-export const HAIRS = ['#2B3674', '#3F3F3E', '#8B5E34', '#D8A657'];
+export const SKIN    = ['#F6D5BC', '#E8B48E', '#C98A5E', '#8D5A3B', '#5E3A24'];
+export const HAIRS   = ['#3F3F3E', '#6B4428', '#B07A45', '#E2C08A', '#C9CED8'];
 export const PALETTE = ['#479DFD', '#7B6AE2', '#12B76A', '#F3A257', '#D86761', '#2960C3'];
+export const HAIR_STYLES = ['Corto', 'Melena', 'Moño', 'Rapado'];
+export const LAYERS = ['shadow', 'hairBack', 'bun', 'legL', 'legR', 'armL', 'armR', 'torso', 'collar',
+  'head', 'eyeL', 'eyeR', 'hairFront', 'strap', 'visor', 'glint'];
+export const FIG_W = 36, FIG_H = 52; // caja de la figura; los pies están en (18, 48)
 
-export function zoneOf(x, y) {
-  for (const r of ROOMS) if (x > r.x && x < r.x + r.w && y > r.y && y < r.y + r.h) return r.id;
-  return 'plaza';
-}
+const INK = '#2B3674';
+const px = (v) => v + 'px';
+const P = (l, t, w, h, bg, r, x = {}) => ({ position: 'absolute', left: px(l), top: px(t), width: px(w), height: px(h),
+  background: bg, borderRadius: typeof r === 'number' ? px(r) : r, ...x });
+const HIDE = { display: 'none' };
 
-// Devuelve los estilos de las 5 capas del avatar a una escala `s`.
-export function avatarParts(color, body, vr, s = 1) {
-  const c = PALETTE[color % 6], sk = SKIN[body % 4], hr = HAIRS[body % 4];
-  const w = 22 * s;
-  return {
-    hair: { position: 'absolute', left: '50%', top: '0px', transform: 'translateX(-50%)',
-      width: w + 'px', height: 5 * s + 'px', background: hr, borderRadius: `${2 * s}px ${2 * s}px 0 0` },
-    head: { position: 'absolute', left: '50%', top: 4 * s + 'px', transform: 'translateX(-50%)',
-      width: 18 * s + 'px', height: 14 * s + 'px', background: sk, borderRadius: 3 * s + 'px' },
-    goggles: { position: 'absolute', left: '50%', top: 9 * s + 'px', transform: 'translateX(-50%)',
-      width: 22 * s + 'px', height: 7 * s + 'px', background: '#2B3674', borderRadius: 2 * s + 'px',
-      borderTop: Math.max(1, s) + 'px solid ' + c, opacity: vr ? 1 : 0 },
-    body: { position: 'absolute', left: '50%', top: 18 * s + 'px', transform: 'translateX(-50%)',
-      width: 24 * s + 'px', height: 18 * s + 'px', background: c, borderRadius: 3 * s + 'px' },
-    legs: { position: 'absolute', left: '50%', top: 36 * s + 'px', transform: 'translateX(-50%)',
-      width: 18 * s + 'px', height: 8 * s + 'px', background: '#2B3674',
-      borderRadius: `0 0 ${2 * s}px ${2 * s}px` },
-  };
-}
+// Ángulo de movimiento (rad, atan2) -> 'down' | 'left' | 'up' | 'right'
+export const dirFromAngle = (a) => {
+  const d = ((a * 180) / Math.PI + 360) % 360;
+  return d >= 45 && d < 135 ? 'down' : d >= 135 && d < 225 ? 'left' : d >= 225 && d < 315 ? 'up' : 'right';
+};
 
-function applyStyle(el, styles) {
-  el.style.cssText = '';
-  for (const [k, v] of Object.entries(styles)) el.style[k] = v;
-}
+export function avatarParts(o = {}, legacyBody, legacyVr) {
+  if (typeof o === 'number') o = { color: o, skin: legacyBody, hair: legacyBody, vr: legacyVr };
+  const { color = 0, skin = 0, hair = 0, hairStyle = 0, vr = false, dir = 'down', phase = 0 } = o;
+  const c = PALETTE[color % PALETTE.length], sk = SKIN[skin % SKIN.length], hr = HAIRS[hair % HAIRS.length];
+  const hs = hairStyle % HAIR_STYLES.length;
+  const side = dir === 'left' ? -1 : dir === 'right' ? 1 : 0, up = dir === 'up';
+  const sw = Math.sin(phase), step = sw * 2.2, b = -Math.abs(sw) * 1.5; // b = balanceo del torso
+  const L = {};
 
-// Crea (o actualiza) las 5 capas del muñeco dentro de `wrap`.
-export function renderAvatar(wrap, { color, body, vr, scale = 1 }) {
-  const parts = avatarParts(color, body, vr, scale);
-  const order = ['hair', 'head', 'goggles', 'body', 'legs'];
-  let layers = wrap.__layers;
-  if (!layers) {
-    layers = {};
-    for (const name of order) {
-      const d = document.createElement('div');
-      d.dataset.layer = name;
-      wrap.appendChild(d);
-      layers[name] = d;
-    }
-    wrap.__layers = layers;
+  L.shadow = P(6, 45, 24, 7, 'rgba(43,54,116,0.16)', 999);
+  if (side) {
+    L.legL = P(15 + step, 38, 6, 9, INK, 3);
+    L.legR = P(15 - step, 38, 6, 9, INK, 3);
+    L.armR = P(15, 25 + b, 6, 12, c, 3, { transformOrigin: '50% 2px', transform: `rotate(${-side * step * 12}deg)`, filter: 'brightness(0.92)' });
+  } else {
+    L.legL = P(11, 38 - Math.max(0, step), 6, 9, INK, 3);
+    L.legR = P(19, 38 - Math.max(0, -step), 6, 9, INK, 3);
+    L.armL = P(5, 25 + b, 6, 12, c, 3, { transformOrigin: '50% 2px', transform: `rotate(${step * 6}deg)`, filter: 'brightness(0.92)' });
+    L.armR = P(25, 25 + b, 6, 12, c, 3, { transformOrigin: '50% 2px', transform: `rotate(${-step * 6}deg)`, filter: 'brightness(0.92)' });
   }
-  for (const name of order) applyStyle(layers[name], parts[name]);
+  L.torso = P(9, 23 + b, 18, 17, c, '9px 9px 6px 6px');
+  if (!up) L.collar = P(side ? 13 + side * 4 : 14, 23 + b, 8, 4, 'rgba(255,255,255,0.45)', '0 0 4px 4px');
+  if (hs === 1) L.hairBack = P(4 + side * 2, 2 + b, 28, 24, hr, '14px 14px 9px 9px');
+  L.head = P(6, 2 + b, 24, 23, sk, 999);
+
+  if (!vr && !up) {
+    if (side) L[side < 0 ? 'eyeL' : 'eyeR'] = P(side < 0 ? 10 : 23, 13 + b, 3, 4, INK, 2);
+    else { L.eyeL = P(12, 13 + b, 3, 4, INK, 2); L.eyeR = P(21, 13 + b, 3, 4, INK, 2); }
+  }
+
+  if (up) {
+    L.hairFront = P(6, 1 + b, 24, hs === 3 ? 15 : 21, hr, '12px 12px 11px 11px');
+  } else {
+    const front = [[5, 0, 26, 12, 5], [6, 0, 24, 10, 4], [5, 0, 26, 11, 5], [7, 1, 22, 7, 3]][hs];
+    const [l, t, w, h, rb] = front;
+    const r = side ? (side < 0 ? `12px 13px ${rb + 6}px ${rb}px` : `13px 12px ${rb}px ${rb + 6}px`) : `13px 13px ${rb}px ${rb}px`;
+    L.hairFront = P(l - side * 2, t + b, w, h, hr, r);
+  }
+  if (hs === 2) L.bun = P(13 - side * 6, -6 + b, 10, 10, hr, 999);
+
+  if (vr) {
+    L.strap = P(up ? 6 : 5, (up ? 12 : 11) + b, up ? 24 : 26, 3, INK, 2);
+    if (!up) {
+      L.visor = side ? P(side < 0 ? 4 : 14, 9 + b, 18, 9, INK, 5) : P(8, 9 + b, 20, 9, INK, 5);
+      L.glint = side ? P(side < 0 ? 7 : 21, 11 + b, 7, 2, c, 1) : P(11, 11 + b, 7, 2, c, 1);
+    }
+  }
+  return LAYERS.map((n) => [n, L[n] || HIDE]);
+}
+
+// Pintor DOM: crea las capas una vez y solo reescribe las que cambian.
+export function renderAvatar(wrap, opts = {}) {
+  const s = opts.scale ?? 1;
+  if (!wrap.__layers) {
+    const fig = document.createElement('div');
+    fig.style.cssText = `position:absolute;left:50%;top:0;width:${FIG_W}px;height:${FIG_H}px;margin-left:-${FIG_W / 2}px;transform-origin:50% 92%;`;
+    wrap.appendChild(fig);
+    wrap.__fig = fig; wrap.__layers = {}; wrap.__prev = {};
+    for (const n of LAYERS) {
+      const d = document.createElement('div');
+      d.dataset.layer = n; fig.appendChild(d); wrap.__layers[n] = d;
+    }
+  }
+  wrap.__fig.style.transform = `scale(${s})`;
+  for (const [n, st] of avatarParts(opts)) {
+    const key = JSON.stringify(st);
+    if (wrap.__prev[n] === key) continue;
+    wrap.__prev[n] = key;
+    const el = wrap.__layers[n];
+    el.style.cssText = '';
+    Object.assign(el.style, st);
+  }
 }

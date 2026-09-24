@@ -7,14 +7,18 @@ import { renderAvatar, PALETTE } from './avatar.js';
 const PHRASES = ['Hola', 'Voy por café', 'Me apunto', 'Ahora vuelvo'];
 const EMOTES = ['👋', '❤️', '😂', '👍', '🎉', '☕'];
 
-// Punto al que sales (en el pasillo) al pulsar "Salir de la sala".
-const EXITS = { cafe: { x: 470, y: 215 }, games: { x: 470, y: 505 }, meet: { x: 724, y: 185 } };
+// Punto al que sales (al pasillo) al pulsar "Salir de la sala".
+const EXITS = {
+  cafe:  { x: 440, y: 175 }, meet:  { x: 735, y: 175 },
+  games: { x: 440, y: 525 }, quiet: { x: 735, y: 525 },
+};
 // Área DENTRO de cada sala donde caes (aleatorio) al iniciar la llamada,
 // para no quedarte en la puerta ni amontonaros en un punto fijo.
 const ROOM_AREAS = {
-  cafe:  { x: [70, 400], y: [215, 320] },
-  meet:  { x: [800, 1120], y: [255, 325] },
-  games: { x: [70, 400], y: [590, 655] },
+  cafe:  { x: [40, 240], y: [140, 200] },
+  meet:  { x: [820, 1080], y: [260, 320] },
+  games: { x: [300, 390], y: [560, 620] },
+  quiet: { x: [800, 890], y: [400, 470] },
 };
 function randomSpot(zone) {
   const a = ROOM_AREAS[zone];
@@ -51,6 +55,12 @@ const previewName = $('preview-name');
 const enterBtn = $('enter-btn');
 
 // ══════════ ONBOARDING ══════════
+// Pinta un avatar chibi centrado dentro de una caja de altura boxH.
+function renderAvatarInBox(el, opts, boxH) {
+  renderAvatar(el, opts);
+  if (el.__fig) el.__fig.style.top = (boxH * 0.92 - 48) + 'px';
+}
+
 function buildBodyChoices() {
   bodyChoices.innerHTML = '';
   for (let i = 0; i < 4; i++) {
@@ -58,8 +68,8 @@ function buildBodyChoices() {
     btn.className = 'body-btn' + (sel.body === i ? ' on' : '');
     btn.onclick = () => { sel.body = i; refreshOnboarding(); };
     const inner = document.createElement('div');
-    inner.style.cssText = 'position:absolute;left:50%;top:12px;transform:translateX(-50%);width:30px;height:52px;';
-    renderAvatar(inner, { color: sel.color, body: i, vr: false, scale: 1.1 });
+    inner.style.cssText = 'position:absolute;inset:0;';
+    renderAvatarInBox(inner, { color: sel.color, skin: i, hair: i, vr: false, scale: 1.1, dir: 'down', phase: 0 }, 74);
     btn.appendChild(inner);
     bodyChoices.appendChild(btn);
   }
@@ -79,7 +89,7 @@ function buildColorChoices() {
 function refreshOnboarding() {
   buildBodyChoices();
   buildColorChoices();
-  renderAvatar(previewAvatar, { color: sel.color, body: sel.body, vr: sel.vr, scale: 3 });
+  renderAvatarInBox(previewAvatar, { color: sel.color, skin: sel.body, hair: sel.body, vr: sel.vr, scale: 2.3, dir: 'down', phase: 0 }, 140);
   previewName.textContent = (nameInput.value.trim() || 'Invitado');
 }
 
@@ -88,7 +98,7 @@ nameInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') enter(); }
 vrSwitch.addEventListener('click', () => {
   sel.vr = !sel.vr;
   vrSwitch.classList.toggle('on', sel.vr);
-  renderAvatar(previewAvatar, { color: sel.color, body: sel.body, vr: sel.vr, scale: 3 });
+  renderAvatarInBox(previewAvatar, { color: sel.color, skin: sel.body, hair: sel.body, vr: sel.vr, scale: 2.3, dir: 'down', phase: 0 }, 140);
 });
 enterBtn.addEventListener('click', enter);
 
@@ -284,9 +294,10 @@ function setLocalSpeaking(b) {
 
 // ---------- cabecera de sala ----------
 const ROOM_META = {
-  cafe: ['ESTÁS EN SALA', 'Cafetería', 'Máquina de café, mesa alta y dos taburetes. Se oye a todos los que están dentro.'],
-  meet: ['ESTÁS EN SALA', 'Sala de reuniones', 'Mesa grande para cuando la pausa se alarga y alguien saca el portátil.'],
-  games: ['ESTÁS EN SALA', 'Sala de juegos', 'Dos recreativas y la mesa de quiz. (Los minijuegos llegan en la fase 2.)'],
+  cafe: ['ESTÁS EN SALA', 'Cafetería', 'Máquina de café y mesas altas. Se oye a todos los que están dentro.'],
+  meet: ['ESTÁS EN SALA', 'Reuniones', 'Mesa grande para cuando la pausa se alarga y alguien saca el portátil.'],
+  games: ['ESTÁS EN SALA', 'Juegos', 'Recreativas y mesa de quiz. Pulsa Empezar quiz para jugar en grupo.'],
+  quiet: ['ESTÁS EN SALA', 'Sala tranquila', 'Rincón chill para charlar con calma. Se oye a todos los que están dentro.'],
   plaza: ['ZONA ABIERTA', 'Plaza central', 'Espacio común. Acércate a alguien y se abre el vídeo entre vosotros.'],
 };
 function updateRoomHeader(zone) {
