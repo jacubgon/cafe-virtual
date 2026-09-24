@@ -198,6 +198,27 @@ html, body {
 .mute-badge { position: absolute; right: -2px; top: 2px; font-size: 12px; opacity: 0; }
 .avatar.muted .mute-badge { opacity: 1; }
 
+/* aro verde de "hablando por micro" */
+.speak-ring { position: absolute; left: 50%; top: 46%; width: 46px; height: 46px; border-radius: 50%; border: 3px solid #12B76A; box-shadow: 0 0 10px rgba(18,183,106,0.55); transform: translate(-50%, -50%); opacity: 0; transition: opacity 120ms ease; pointer-events: none; }
+
+/* emoji flotante (reacción) */
+@keyframes floatUp {
+  0%   { transform: translate(-50%, 0) scale(0.6); opacity: 0; }
+  20%  { opacity: 1; transform: translate(-50%, -12px) scale(1.15); }
+  100% { transform: translate(-50%, -48px) scale(1); opacity: 0; }
+}
+.float-emote { position: absolute; left: 50%; top: -12px; font-size: 22px; pointer-events: none; animation: floatUp 1.6s ease-out forwards; z-index: 5; }
+
+/* barra de emotes */
+.emotes { display: flex; gap: 4px; }
+.emote-btn { width: 34px; height: 34px; border-radius: 10px; border: 1px solid var(--border-default, #E4E6E8); background: #fff; font-size: 16px; cursor: pointer; transition: background 0.12s, transform 0.08s; }
+.emote-btn:hover { background: #F4F6FF; }
+.emote-btn:active { transform: scale(0.9); }
+
+/* resaltado del que habla en las tarjetas de vídeo */
+.call-tile.speaking { border-color: #12B76A; box-shadow: 0 0 0 3px rgba(18,183,106,0.6), 0 6px 18px rgba(43,54,116,0.12); }
+.near-tile.speaking { box-shadow: 0 0 0 2px #12B76A; }
+
 /* ══════════ Modal de videollamada de sala — CRISTAL ══════════ */
 #call-modal {
   position: fixed; inset: 0; z-index: 60;

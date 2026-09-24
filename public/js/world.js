@@ -175,9 +175,12 @@ export class World {
     wrap.className = 'avatar';
     wrap.style.cssText = `position:absolute;width:${44 * s}px;height:${44 * s}px;transform:translate(-50%,-100%);will-change:left,top;`;
 
-    // aro verde de "hablando"
+    // aro verde de "hablando" (bocadillo de frase)
     const ring = document.createElement('div');
     ring.className = 'talk-ring';
+    // aro de "hablando por micro" (voz detectada)
+    const speakRing = document.createElement('div');
+    speakRing.className = 'speak-ring';
     // sombra bajo los pies
     const shadow = document.createElement('div');
     shadow.className = 'avatar-shadow';
@@ -201,9 +204,27 @@ export class World {
     inner.style.cssText = 'position:absolute;inset:0;';
     renderAvatar(inner, { color: p.color, body: p.body, vr: p.vr, scale: s });
 
-    wrap.append(ring, shadow, tag, bubble, inner, mute);
+    wrap.append(speakRing, ring, shadow, tag, bubble, inner, mute);
     this.stageEl.appendChild(wrap);
     p.el = wrap; p.innerEl = inner; p.tagEl = tag; p.bubbleEl = bubble; p.s = s;
+    p.speakRing = speakRing;
+  }
+
+  // Resalta a quien está hablando por el micro (aro verde estable).
+  setSpeaking(id, on) {
+    const p = this.players.get(id);
+    if (p && p.speakRing) p.speakRing.style.opacity = on ? '1' : '0';
+  }
+
+  // Emoji flotante que sube y se desvanece sobre el avatar.
+  showEmote(id, emote) {
+    const p = this.players.get(id);
+    if (!p || !p.el) return;
+    const e = document.createElement('div');
+    e.className = 'float-emote';
+    e.textContent = emote;
+    p.el.appendChild(e);
+    setTimeout(() => e.remove(), 1600);
   }
 
   setMe(info) {

@@ -242,6 +242,23 @@ io.on('connection', (socket) => {
     else if (game.phase === 'done') startGame();
   });
 
+  // Emote / reacción -> emoji flotante sobre el avatar (visible para todos).
+  socket.on('emote', (e) => {
+    const p = players.get(socket.id);
+    if (!p) return;
+    const ALLOWED = ['👋', '❤️', '😂', '👍', '🎉', '☕'];
+    if (!ALLOWED.includes(e)) return;
+    io.emit('player-emote', { id: socket.id, emote: e });
+  });
+
+  // Estado de "hablando" (lo detecta cada cliente con su propio micro).
+  socket.on('speaking', (b) => {
+    const p = players.get(socket.id);
+    if (!p) return;
+    p.speaking = !!b;
+    socket.broadcast.emit('player-speaking', { id: socket.id, speaking: !!b });
+  });
+
   // Frase rápida -> bocadillo sobre el avatar (visible para todos).
   socket.on('say', (text) => {
     const p = players.get(socket.id);

@@ -5,6 +5,7 @@ import { RTC } from './rtc.js';
 import { renderAvatar, PALETTE } from './avatar.js';
 
 const PHRASES = ['Hola', 'Voy por café', 'Me apunto', 'Ahora vuelvo'];
+const EMOTES = ['👋', '❤️', '😂', '👍', '🎉', '☕'];
 
 // Punto al que sales (en el pasillo) al pulsar "Salir de la sala".
 const EXITS = { cafe: { x: 470, y: 215 }, games: { x: 470, y: 505 }, meet: { x: 724, y: 185 } };
@@ -37,6 +38,7 @@ const connectedPeers = new Set();    // ids con conexión WebRTC por proximidad
 const streamById = new Map();        // id -> MediaStream remoto
 const peerVideoEls = new Map();      // id -> <video> persistente (no se recrea)
 let selfCallVideo = null;            // <video> propio para el modal
+const speakingIds = new Set();       // ids que están hablando ahora mismo
 
 // ---------- refs ----------
 const $ = (id) => document.getElementById(id);
@@ -89,12 +91,27 @@ vrSwitch.addEventListener('click', () => {
   renderAvatar(previewAvatar, { color: sel.color, body: sel.body, vr: sel.vr, scale: 3 });
 });
 enterBtn.addEventListener('click', enter);
+
+// Recordar el último avatar/nombre usado (sin fricción al volver a entrar).
+const PROFILE_KEY = 'cafevirtual.profile';
+try {
+  const saved = JSON.parse(localStorage.getItem(PROFILE_KEY) || 'null');
+  if (saved) {
+    sel.body = Number.isInteger(saved.body) ? saved.body : 0;
+    sel.color = Number.isInteger(saved.color) ? saved.color : 0;
+    sel.vr = typeof saved.vr === 'boolean' ? saved.vr : true;
+    if (saved.name) nameInput.value = saved.name;
+    vrSwitch.classList.toggle('on', sel.vr);
+  }
+} catch {}
+
 refreshOnboarding();
 nameInput.focus();
 
 // ══════════ ENTRAR ══════════
 async function enter() {
   sel.name = nameInput.value.trim() || 'Invitado';
+  try { localStorage.setItem(PROFILE_KEY, JSON.stringify({ name: sel.name, body: sel.body, color: sel.color, vr: sel.vr })); } catch {}
   enterBtn.disabled = true;
   enterBtn.textContent = 'Pidiendo cámara…';
 
@@ -143,6 +160,8 @@ async function startOffice(you, players) {
   updateCamUI();
 
   buildPhrases();
+  buildEmotes();
+  initSpeakingDetection();
 
   // red -> mundo
   socket.on('player-joined', (p) => world.addPlayer(p));
@@ -154,6 +173,12 @@ async function startOffice(you, players) {
   });
   socket.on('player-zone', ({ id, zone }) => { world.setPlayerZone(id, zone); refreshVideoUI(); });
   socket.on('player-said', ({ id, text }) => world.showBubble(id, text));
+  socket.on('player-emote', ({ id, emote }) => world.showEmote(id, emote));
+  socket.on('player-speaking', ({ id, speaking }) => {
+    world.setSpeaking(id, speaking);
+    if (speaking) speakingIds.add(id); else speakingIds.delete(id);
+    refreshVideoUI();
+  });
   socket.on('game:state', (v) => { gameState = v; renderGame(); });
 
   // mundo -> red
@@ -205,6 +230,56 @@ function buildPhrases() {
     b.onclick = () => socket.emit('say', t);
     box.appendChild(b);
   }
+}
+
+function buildEmotes() {
+  const box = $('emotes');
+  box.innerHTML = '';
+  for (const e of EMOTES) {
+    const b = document.createElement('button');
+    b.className = 'emote-btn';
+    b.textContent = e;
+    b.title = 'Reacción';
+    b.onclick = () => socket.emit('emote', e);
+    box.appendChild(b);
+  }
+}
+
+// ---------- detección de "hablando" (voz por micro) ----------
+function initSpeakingDetection() {
+  const tracks = localStream.getAudioTracks();
+  if (!tracks.length) return;
+  try {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    const ctx = new AC();
+    const src = ctx.createMediaStreamSource(localStream);
+    const analyser = ctx.createAnalyser();
+    analyser.fftSize = 512;
+    src.connect(analyser);
+    const data = new Uint8Array(analyser.frequencyBinCount);
+    let state = false, lastChange = 0;
+    setInterval(() => {
+      analyser.getByteTimeDomainData(data);
+      let sum = 0;
+      for (let i = 0; i < data.length; i++) { const v = (data[i] - 128) / 128; sum += v * v; }
+      const rms = Math.sqrt(sum / data.length);
+      const now = performance.now();
+      const talking = micOn && rms > 0.045;
+      if (talking !== state && now - lastChange > 250) {
+        state = talking; lastChange = now;
+        setLocalSpeaking(talking);
+      }
+    }, 150);
+  } catch (e) {
+    console.warn('Sin detección de voz:', e);
+  }
+}
+
+function setLocalSpeaking(b) {
+  world.setSpeaking(me.id, b);
+  if (b) speakingIds.add(me.id); else speakingIds.delete(me.id);
+  refreshVideoUI();
+  socket.emit('speaking', b);
 }
 
 // ---------- cabecera de sala ----------
@@ -294,7 +369,7 @@ function renderPlaza() {
     if (!p) continue;
     const c = PALETTE[p.color % 6];
     const tile = document.createElement('div');
-    tile.className = 'near-tile';
+    tile.className = 'near-tile' + (speakingIds.has(id) ? ' speaking' : '');
     const top = document.createElement('div');
     top.className = 'tile-top';
     top.style.background = `linear-gradient(160deg, ${c} 0%, #2B3674 100%)`;
@@ -329,7 +404,7 @@ function renderCall() {
 
 function selfTile() {
   const tile = document.createElement('div');
-  tile.className = 'call-tile me';
+  tile.className = 'call-tile me' + (speakingIds.has(me.id) ? ' speaking' : '');
   if (!selfCallVideo) {
     selfCallVideo = document.createElement('video');
     selfCallVideo.autoplay = true; selfCallVideo.playsInline = true; selfCallVideo.muted = true;
@@ -346,7 +421,7 @@ function selfTile() {
 function peerTile(id) {
   const p = world.players.get(id);
   const tile = document.createElement('div');
-  tile.className = 'call-tile';
+  tile.className = 'call-tile' + (speakingIds.has(id) ? ' speaking' : '');
   if (streamById.has(id)) tile.appendChild(getPeerVideo(id));
   else { const c = PALETTE[p.color % 6]; const f = document.createElement('div'); f.className = 'call-face'; f.style.background = `linear-gradient(160deg, ${c}, #2B3674)`; f.textContent = initials(p.name); tile.appendChild(f); }
   const name = document.createElement('div'); name.className = 'call-name'; name.textContent = p.name;
