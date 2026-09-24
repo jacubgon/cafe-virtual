@@ -115,7 +115,7 @@ async function enter() {
 }
 
 // ══════════ OFICINA ══════════
-function startOffice(you, players) {
+async function startOffice(you, players) {
   $('onboarding').classList.add('hidden');
   $('office').classList.remove('hidden');
 
@@ -123,6 +123,15 @@ function startOffice(you, players) {
   world = new World($('stage-wrap'), $('stage'));
   rtc = new RTC(socket, you.id);
   rtc.setLocalStream(localStream);
+
+  // Servidores ICE (STUN + TURN) desde el servidor, antes de conectar con nadie.
+  try {
+    const r = await fetch('/ice');
+    const d = await r.json();
+    rtc.setIceServers(d.iceServers);
+  } catch (e) {
+    console.warn('No pude obtener /ice; uso solo STUN (misma red).', e);
+  }
 
   world.setMe(you);
   world.setPlayers(players);

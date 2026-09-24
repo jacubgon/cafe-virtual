@@ -5,10 +5,10 @@
 // Para evitar el problema del "glare" (ambos ofertan a la vez), el par con
 // el id más pequeño es siempre quien inicia la oferta.
 
-const ICE_SERVERS = [
+// STUN por defecto (misma red). El TURN real llega del servidor vía /ice.
+const DEFAULT_ICE = [
   { urls: 'stun:stun.l.google.com:19302' },
   { urls: 'stun:stun1.l.google.com:19302' },
-  // Si hay gente fuera de la oficina, aquí se añadiría un servidor TURN.
 ];
 
 export class RTC {
@@ -16,6 +16,7 @@ export class RTC {
     this.socket = socket;
     this.myId = myId;
     this.localStream = null;
+    this.iceServers = DEFAULT_ICE;
     this.peers = new Map(); // peerId -> { pc, audioEl, videoEl, gain? }
 
     // callbacks para main.js
@@ -27,6 +28,12 @@ export class RTC {
 
   setLocalStream(stream) {
     this.localStream = stream;
+  }
+
+  // Servidores ICE (STUN+TURN) obtenidos del servidor; se aplican a las
+  // conexiones nuevas. Las ya abiertas siguen con los que tenían.
+  setIceServers(list) {
+    if (Array.isArray(list) && list.length) this.iceServers = list;
   }
 
   // Nos hemos acercado a alguien -> abrir conexión.
@@ -48,7 +55,7 @@ export class RTC {
   }
 
   _createPeer(peerId) {
-    const pc = new RTCPeerConnection({ iceServers: ICE_SERVERS });
+    const pc = new RTCPeerConnection({ iceServers: this.iceServers });
 
     // añadimos nuestras pistas (cam + micro)
     if (this.localStream) {

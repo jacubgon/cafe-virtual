@@ -18,6 +18,43 @@ const io = new Server(server);
 
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
+// Servidores ICE (STUN + TURN) para WebRTC. El STUN público basta en la misma
+// red; el TURN (necesario entre redes distintas) se configura por variables de
+// entorno, así la clave del proveedor nunca va en el código del cliente.
+const STUN = [
+  { urls: ['stun:stun.l.google.com:19302', 'stun:stun1.l.google.com:19302'] },
+];
+let iceCache = null;
+let iceCacheAt = 0;
+
+app.get('/ice', async (req, res) => {
+  try {
+    // Opción A: Metered.ca con credenciales efímeras (recomendado, seguro).
+    if (process.env.METERED_DOMAIN && process.env.METERED_API_KEY) {
+      const now = Date.now();
+      if (!iceCache || now - iceCacheAt > 5 * 60 * 1000) {
+        const url = `https://${process.env.METERED_DOMAIN}/api/v1/turn/credentials?apiKey=${process.env.METERED_API_KEY}`;
+        const r = await fetch(url);
+        if (r.ok) { iceCache = await r.json(); iceCacheAt = now; }
+      }
+      if (iceCache) return res.json({ iceServers: iceCache });
+    }
+    // Opción B: TURN estático por env (cualquier proveedor / coturn propio).
+    if (process.env.TURN_URLS) {
+      const turn = {
+        urls: process.env.TURN_URLS.split(',').map((s) => s.trim()),
+        username: process.env.TURN_USERNAME || '',
+        credential: process.env.TURN_CREDENTIAL || '',
+      };
+      return res.json({ iceServers: [...STUN, turn] });
+    }
+  } catch (e) {
+    console.error('ICE /ice error:', e);
+  }
+  // Sin TURN configurado: solo STUN (funciona en la misma red).
+  res.json({ iceServers: STUN });
+});
+
 // Estado del mundo en memoria. Para <15 personas sobra de largo.
 // id -> { id, name, body, color, vr, x, y, muted, camOff }
 const players = new Map();
