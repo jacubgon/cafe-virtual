@@ -98,11 +98,6 @@ export class World {
       `<div style="position:absolute;left:${x}px;top:${y}px;width:${w}px;height:${h}px;border-radius:${r}px;background:${color};"></div>`;
     const label = (x, y, txt) =>
       `<div style="position:absolute;left:${x}px;top:${y}px;font-size:12px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:#8A92AE;">${txt}</div>`;
-    const plant = (x, y, s = 1) => `
-      <div style="position:absolute;left:${x}px;top:${y}px;width:${24 * s}px;height:${36 * s}px;">
-        <div class="plant" style="position:absolute;left:50%;bottom:${12 * s}px;transform:translateX(-50%);width:${22 * s}px;height:${26 * s}px;background:radial-gradient(circle at 50% 60%, #86D3A6, #55B584);border-radius:50% 50% 46% 46%;"></div>
-        <div style="position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:${15 * s}px;height:${13 * s}px;background:#E7DACb;border-radius:4px 4px 6px 6px;box-shadow:0 3px 8px rgba(43,54,116,0.08);"></div>
-      </div>`;
 
     const walls = WALLS.map((w) =>
       `<div style="position:absolute;left:${w.x}px;top:${w.y}px;width:${w.w}px;height:${w.h}px;background:#E0E6F3;border-radius:7px;box-shadow:0 1px 2px rgba(43,54,116,0.05);"></div>`
@@ -122,21 +117,20 @@ export class World {
 
       <!-- ══ Cafetería ══ -->
       ${label(56, 54, 'Cafetería')}
-      ${flat(70, 250, 150, 96, '#DCEAFB', 60)}            <!-- alfombra -->
+      ${flat(70, 208, 150, 96, '#DCEAFB', 60)}            <!-- mesa redonda (subida, sin tocar la pared) -->
       ${soft(70, 110, 190, 44, '#CFE0FA', 14)}            <!-- barra -->
       ${soft(96, 96, 52, 34, '#B9CDF0', 12)}              <!-- cafetera -->
       ${flat(200, 116, 16, 16, '#EAF1FD')} ${flat(224, 116, 16, 16, '#EAF1FD')}
-      ${flat(104, 250, 30, 30, '#C6D7F4')} ${flat(150, 258, 30, 30, '#C6D7F4')}  <!-- taburetes -->
-      ${plant(360, 250, 1.1)}
+      ${flat(104, 210, 30, 30, '#C6D7F4')} ${flat(150, 218, 30, 30, '#C6D7F4')}  <!-- taburetes -->
+
 
       <!-- ══ Reuniones ══ -->
       ${label(792, 54, 'Reuniones')}
-      ${soft(884, 150, 190, 92, '#DCE3F6', 46)}           <!-- mesa -->
-      ${flat(902, 128, 24, 18, '#C6D1EE', 8)} ${flat(960, 124, 24, 18, '#C6D1EE', 8)} ${flat(1018, 128, 24, 18, '#C6D1EE', 8)}
-      ${flat(902, 250, 24, 18, '#C6D1EE', 8)} ${flat(960, 254, 24, 18, '#C6D1EE', 8)} ${flat(1018, 250, 24, 18, '#C6D1EE', 8)}
-      ${soft(986, 66, 110, 52, '#CBD6F2', 10)}            <!-- pantalla -->
-      ${flat(1000, 82, 60, 8, '#AFC0EC', 4)} ${flat(1000, 96, 44, 8, '#AFC0EC', 4)}
-      ${plant(1102, 262, 1.1)}
+      ${soft(854, 150, 190, 92, '#DCE3F6', 46)}           <!-- mesa (más a la izquierda) -->
+      ${flat(872, 128, 24, 18, '#C6D1EE', 8)} ${flat(930, 124, 24, 18, '#C6D1EE', 8)} ${flat(988, 128, 24, 18, '#C6D1EE', 8)}
+      ${flat(872, 250, 24, 18, '#C6D1EE', 8)} ${flat(930, 254, 24, 18, '#C6D1EE', 8)} ${flat(988, 250, 24, 18, '#C6D1EE', 8)}
+      ${soft(1006, 52, 110, 52, '#CBD6F2', 10)}           <!-- cartelito (más arriba y a la derecha) -->
+      ${flat(1020, 68, 60, 8, '#AFC0EC', 4)} ${flat(1020, 82, 44, 8, '#AFC0EC', 4)}
 
       <!-- ══ Juegos ══ -->
       ${label(56, 384, 'Juegos')}
@@ -146,7 +140,6 @@ export class World {
       ${soft(150, 448, 62, 104, '#ECD8EE', 14)}           <!-- recreativa 2 -->
       ${flat(162, 462, 38, 34, '#E2C0E6', 8)}
       ${soft(258, 470, 120, 78, '#E0D6F7', 16)}           <!-- mesa juego -->
-      ${plant(360, 590, 1)}
 
       <!-- ══ Plaza / pasillo ══ -->
       ${flat(486, 300, 220, 150, '#E9F3EE', 80)}          <!-- alfombra -->
@@ -154,9 +147,8 @@ export class World {
       <div class="water" style="position:absolute;left:570px;top:352px;width:52px;height:46px;border-radius:999px;background:radial-gradient(circle,#CDE9EE,#A9D6E0);"></div>
       ${label(524, 250, 'Plaza')}
       ${soft(470, 470, 96, 26, '#D9E0F4', 13)}            <!-- banco -->
-      ${plant(700, 468, 1.1)}
       ${soft(852, 544, 236, 76, '#FFFFFF', 16)}           <!-- cartel limpio -->
-      ${label(872, 566, 'Café · 11:00')}
+      ${label(872, 566, 'Café · 10:45')}
 
       ${doors}
       ${walls}
@@ -209,35 +201,9 @@ export class World {
     inner.style.cssText = 'position:absolute;inset:0;';
     renderAvatar(inner, { color: p.color, body: p.body, vr: p.vr, scale: s });
 
-    // "cabeza-cámara": círculo con el vídeo de la persona (si está conectada).
-    const headWrap = document.createElement('div');
-    headWrap.className = 'avatar-head-video';
-    headWrap.style.cssText = `position:absolute;left:50%;top:${-3 * s}px;transform:translateX(-50%);width:${28 * s}px;height:${28 * s}px;border-radius:50%;overflow:hidden;display:none;border:2px solid #fff;box-shadow:0 2px 6px rgba(43,54,116,0.3);`;
-    const headVideo = document.createElement('video');
-    headVideo.autoplay = true; headVideo.playsInline = true; headVideo.muted = true;
-    headVideo.style.cssText = `width:100%;height:100%;object-fit:cover;${isMe ? 'transform:scaleX(-1);' : ''}`;
-    headWrap.appendChild(headVideo);
-    inner.appendChild(headWrap);
-
     wrap.append(ring, shadow, tag, bubble, inner, mute);
     this.stageEl.appendChild(wrap);
     p.el = wrap; p.innerEl = inner; p.tagEl = tag; p.bubbleEl = bubble; p.s = s;
-    p.headWrap = headWrap; p.headVideo = headVideo;
-  }
-
-  // Muestra el vídeo de la persona como su cabeza (o vuelve al muñeco si null).
-  setPlayerStream(id, stream) {
-    const p = this.players.get(id);
-    if (!p || !p.headWrap) return;
-    const layers = p.innerEl && p.innerEl.__layers;
-    if (stream) {
-      if (p.headVideo.srcObject !== stream) p.headVideo.srcObject = stream;
-      p.headWrap.style.display = 'block';
-      if (layers) { layers.hair.style.display = 'none'; layers.head.style.display = 'none'; layers.goggles.style.display = 'none'; }
-    } else {
-      p.headWrap.style.display = 'none';
-      if (layers) { layers.hair.style.display = ''; layers.head.style.display = ''; layers.goggles.style.display = ''; }
-    }
   }
 
   setMe(info) {
