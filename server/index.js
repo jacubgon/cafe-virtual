@@ -28,30 +28,58 @@ let iceCache = null;
 let iceCacheAt = 0;
 
 app.get('/ice', async (req, res) => {
+  const debug = req.query.debug === '1';
+  const diag = { source: 'stun' };
   try {
     // Opción A: Metered.ca con credenciales efímeras (recomendado, seguro).
-    if (process.env.METERED_DOMAIN && process.env.METERED_API_KEY) {
+    const domainRaw = (process.env.METERED_DOMAIN || '').trim();
+    const domain = domainRaw.replace(/^https?:\/\//, '').replace(/\/+$/, '');
+    const key = (process.env.METERED_API_KEY || '').trim();
+    diag.hasDomain = !!domain; diag.domain = domain;
+    diag.hasKey = !!key; diag.keyLen = key.length;
+
+    if (domain && key) {
       const now = Date.now();
       if (!iceCache || now - iceCacheAt > 5 * 60 * 1000) {
-        const url = `https://${process.env.METERED_DOMAIN}/api/v1/turn/credentials?apiKey=${process.env.METERED_API_KEY}`;
+        const url = `https://${domain}/api/v1/turn/credentials?apiKey=${key}`;
         const r = await fetch(url);
-        if (r.ok) { iceCache = await r.json(); iceCacheAt = now; }
+        diag.fetchStatus = r.status;
+        const body = await r.text();
+        if (r.ok) {
+          try { iceCache = JSON.parse(body); iceCacheAt = now; }
+          catch { diag.parseError = true; }
+        } else {
+          diag.fetchBody = body.slice(0, 200);
+          console.error('ICE Metered fetch no-ok:', r.status, diag.fetchBody);
+        }
       }
-      if (iceCache) return res.json({ iceServers: iceCache });
+      if (iceCache) {
+        diag.source = 'metered';
+        diag.turnCount = iceCache.filter((s) => {
+          const u = Array.isArray(s.urls) ? s.urls : [s.urls];
+          return u.some((x) => x && x.startsWith('turn'));
+        }).length;
+        if (debug) return res.json({ diag });
+        return res.json({ iceServers: iceCache });
+      }
     }
     // Opción B: TURN estático por env (cualquier proveedor / coturn propio).
     if (process.env.TURN_URLS) {
+      diag.source = 'static';
       const turn = {
         urls: process.env.TURN_URLS.split(',').map((s) => s.trim()),
         username: process.env.TURN_USERNAME || '',
         credential: process.env.TURN_CREDENTIAL || '',
       };
+      if (debug) return res.json({ diag });
       return res.json({ iceServers: [...STUN, turn] });
     }
   } catch (e) {
+    diag.error = String(e);
     console.error('ICE /ice error:', e);
   }
-  // Sin TURN configurado: solo STUN (funciona en la misma red).
+  // Sin TURN (o fallo): solo STUN (funciona en la misma red).
+  if (debug) return res.json({ diag });
   res.json({ iceServers: STUN });
 });
 
