@@ -277,9 +277,35 @@ export class World {
     inner.style.cssText = 'position:absolute;inset:0;';
     renderAvatar(inner, { color: p.color, body: p.body, vr: p.vr, scale: s });
 
+    // "cabeza-cámara": círculo con el vídeo de la persona (si está conectada).
+    const headWrap = document.createElement('div');
+    headWrap.className = 'avatar-head-video';
+    headWrap.style.cssText = `position:absolute;left:50%;top:${-3 * s}px;transform:translateX(-50%);width:${28 * s}px;height:${28 * s}px;border-radius:50%;overflow:hidden;display:none;border:2px solid #fff;box-shadow:0 2px 6px rgba(43,54,116,0.3);`;
+    const headVideo = document.createElement('video');
+    headVideo.autoplay = true; headVideo.playsInline = true; headVideo.muted = true;
+    headVideo.style.cssText = `width:100%;height:100%;object-fit:cover;${isMe ? 'transform:scaleX(-1);' : ''}`;
+    headWrap.appendChild(headVideo);
+    inner.appendChild(headWrap);
+
     wrap.append(ring, shadow, tag, bubble, inner, mute);
     this.stageEl.appendChild(wrap);
     p.el = wrap; p.innerEl = inner; p.tagEl = tag; p.bubbleEl = bubble; p.s = s;
+    p.headWrap = headWrap; p.headVideo = headVideo;
+  }
+
+  // Muestra el vídeo de la persona como su cabeza (o vuelve al muñeco si null).
+  setPlayerStream(id, stream) {
+    const p = this.players.get(id);
+    if (!p || !p.headWrap) return;
+    const layers = p.innerEl && p.innerEl.__layers;
+    if (stream) {
+      if (p.headVideo.srcObject !== stream) p.headVideo.srcObject = stream;
+      p.headWrap.style.display = 'block';
+      if (layers) { layers.hair.style.display = 'none'; layers.head.style.display = 'none'; layers.goggles.style.display = 'none'; }
+    } else {
+      p.headWrap.style.display = 'none';
+      if (layers) { layers.hair.style.display = ''; layers.head.style.display = ''; layers.goggles.style.display = ''; }
+    }
   }
 
   setMe(info) {
@@ -324,6 +350,7 @@ export class World {
       p.muted = muted;
       p.el?.classList.toggle('muted', muted);
     }
+    if (typeof camOff === 'boolean') p.camOff = camOff;
   }
 
   showBubble(id, text) {

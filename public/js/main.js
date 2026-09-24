@@ -141,6 +141,7 @@ async function startOffice(you, players) {
   $('self-video').srcObject = localStream;
   $('self-label').textContent = you.name + ' (tú)';
   updateCamUI();
+  updateMyHead();
 
   buildPhrases();
 
@@ -148,7 +149,11 @@ async function startOffice(you, players) {
   socket.on('player-joined', (p) => world.addPlayer(p));
   socket.on('player-left', (id) => world.removePlayer(id));
   socket.on('player-moved', ({ id, x, y }) => world.updatePlayer(id, x, y));
-  socket.on('player-av-state', ({ id, muted, camOff }) => { world.updateAvState(id, muted, camOff); refreshVideoUI(); });
+  socket.on('player-av-state', ({ id, muted, camOff }) => {
+    world.updateAvState(id, muted, camOff);
+    world.setPlayerStream(id, camOff ? null : (streamById.get(id) || null));
+    refreshVideoUI();
+  });
   socket.on('player-zone', ({ id, zone }) => { world.setPlayerZone(id, zone); refreshVideoUI(); });
   socket.on('player-said', ({ id, text }) => world.showBubble(id, text));
   socket.on('game:state', (v) => { gameState = v; renderGame(); });
@@ -161,6 +166,7 @@ async function startOffice(you, players) {
   world.onProximityLeave = (id) => {
     rtc.disconnect(id); connectedPeers.delete(id); streamById.delete(id);
     peerVideoEls.get(id)?.remove(); peerVideoEls.delete(id);
+    world.setPlayerStream(id, null); // su cabeza vuelve al muñeco
     refreshVideoUI();
   };
   world.onVolumes = (vols) => { for (const [id, v] of vols) rtc.setVolume(id, v); };
@@ -173,6 +179,8 @@ async function startOffice(you, players) {
     streamById.set(id, stream);
     const v = peerVideoEls.get(id);
     if (v) v.srcObject = stream;
+    const p = world.players.get(id);
+    world.setPlayerStream(id, p && p.camOff ? null : stream); // cabeza-cámara
     refreshVideoUI();
   };
   rtc.onPeerClosed = () => {};
@@ -441,6 +449,13 @@ function updateCamUI() {
   $('cam-btn').classList.toggle('small', true);
 }
 
+// Mi propia cabeza-cámara en el mapa (mi cara si tengo cámara, si no el muñeco).
+function updateMyHead() {
+  if (!world || !me) return;
+  const hasVideo = camOn && localStream.getVideoTracks().length > 0;
+  world.setPlayerStream(me.id, hasVideo ? localStream : null);
+}
+
 async function toggleCam() {
   const tracks = localStream.getVideoTracks();
   if (tracks.length === 0) {
@@ -461,6 +476,7 @@ async function toggleCam() {
     for (const t of tracks) t.enabled = camOn;
   }
   updateCamUI();
+  updateMyHead();
   updateCallControls();
   refreshVideoUI();
   socket.emit('av-state', { camOff: !camOn });
