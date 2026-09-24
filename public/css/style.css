@@ -250,3 +250,30 @@ html, body {
   margin-left: 8px;
 }
 .call-leave:hover { background: #C25551; }
+
+/* ── Minijuego (quiz) dentro del modal ── */
+.call-games { background: #14162a; border: 1px solid rgba(255,255,255,0.07); border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+.cg-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.cg-title { font-size: 14px; font-weight: 700; color: #fff; }
+.cg-status { font-size: 12px; color: #9aa3c7; }
+.cg-body { display: flex; flex-direction: column; gap: 12px; }
+
+.cg-start { align-self: flex-start; height: 40px; padding: 0 18px; border: 0; border-radius: 8px; background: linear-gradient(180deg,#7B6AE2,#5B4BC4); color: #fff; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; }
+.cg-hint { font-size: 12px; color: #9aa3c7; }
+
+.cg-question { font-size: 18px; font-weight: 700; color: #fff; line-height: 1.35; }
+.cg-options { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+@media (max-width: 620px) { .cg-options { grid-template-columns: 1fr; } }
+.cg-opt { text-align: left; min-height: 44px; padding: 10px 14px; border-radius: 8px; border: 1px solid #33375a; background: #1c1f38; color: #e7e9f5; font-size: 14px; font-weight: 500; cursor: pointer; font-family: inherit; transition: background 120ms, border-color 120ms; }
+.cg-opt:hover:not(:disabled) { background: #262a49; }
+.cg-opt:disabled { cursor: default; }
+.cg-opt.correct { background: #123f2b; border-color: #12B76A; color: #b8f0d2; }
+.cg-opt.wrong { background: #3f1d1d; border-color: #D86761; color: #f3c2c2; }
+.cg-opt.mine { box-shadow: 0 0 0 2px rgba(117,183,255,0.5); }
+
+.cg-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.cg-next { height: 38px; padding: 0 16px; border: 0; border-radius: 8px; background: linear-gradient(180deg,#2F76F7,#479DFD); color: #fff; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; }
+.cg-scores { display: flex; flex-wrap: wrap; gap: 6px; }
+.cg-score { font-size: 12px; font-weight: 600; color: #2B3674; background: #e9edff; border-radius: 999px; padding: 3px 10px; }
+.cg-score .pts { color: #5B4BC4; }
+.cg-waiting { font-size: 12px; color: #9aa3c7; }

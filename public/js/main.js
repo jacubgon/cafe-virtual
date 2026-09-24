@@ -32,6 +32,7 @@ let me = null;                       // { id, name, ... }
 let myZone = 'plaza';                // sala en la que estás físicamente
 let roomMates = [];                  // ids de otros en tu misma sala
 let callZone = null;                 // sala cuya videollamada tienes abierta (o null)
+let gameState = null;                // estado del minijuego (quiz) de la sala de juegos
 const connectedPeers = new Set();    // ids con conexión WebRTC por proximidad
 const streamById = new Map();        // id -> MediaStream remoto
 const peerVideoEls = new Map();      // id -> <video> persistente (no se recrea)
@@ -150,6 +151,7 @@ async function startOffice(you, players) {
   socket.on('player-av-state', ({ id, muted, camOff }) => { world.updateAvState(id, muted, camOff); refreshVideoUI(); });
   socket.on('player-zone', ({ id, zone }) => { world.setPlayerZone(id, zone); refreshVideoUI(); });
   socket.on('player-said', ({ id, text }) => world.showBubble(id, text));
+  socket.on('game:state', (v) => { gameState = v; renderGame(); });
 
   // mundo -> red
   world.onMove = (x, y) => socket.emit('move', { x, y });
@@ -263,6 +265,7 @@ function openCall(zone) {
   $('call-modal').classList.remove('hidden');
   updateCallControls();
   renderCall();
+  renderGame();
 }
 
 function closeCall() {
@@ -270,6 +273,7 @@ function closeCall() {
   world.setInputEnabled(true);   // recuperas el control (sigues en la sala)
   $('call-modal').classList.add('hidden');
   refreshVideoUI();
+  renderGame();
 }
 
 function exitRoom() {
@@ -359,6 +363,75 @@ function updateCallControls() {
   $('call-mic').textContent = micOn ? '🎤' : '🔇';
   $('call-cam').classList.toggle('off', !camOn);
   $('call-cam').textContent = camOn ? '📷' : '🚫';
+}
+
+// ---------- minijuego: quiz ----------
+function renderGame() {
+  const panel = $('call-games');
+  if (callZone !== 'games') { panel.classList.add('hidden'); return; }
+  panel.classList.remove('hidden');
+  const body = $('cg-body');
+  const status = $('cg-status');
+  const g = gameState;
+  body.innerHTML = '';
+
+  if (!g || g.phase === 'idle') {
+    status.textContent = '';
+    const btn = document.createElement('button');
+    btn.className = 'cg-start'; btn.textContent = 'Empezar quiz';
+    btn.onclick = () => socket.emit('game:start');
+    const hint = document.createElement('div');
+    hint.className = 'cg-hint';
+    hint.textContent = 'Cultura general para toda la sala: cada uno responde y se revela la correcta.';
+    body.append(btn, hint);
+    return;
+  }
+
+  status.textContent = g.phase === 'done' ? 'Fin del quiz' : `Pregunta ${g.qi + 1} de ${g.total}`;
+
+  if (g.phase !== 'done') {
+    const q = document.createElement('div'); q.className = 'cg-question'; q.textContent = g.question;
+    const opts = document.createElement('div'); opts.className = 'cg-options';
+    const reveal = g.phase === 'reveal';
+    const iAnswered = g.answered.includes(me.id);
+    g.options.forEach((text, i) => {
+      const b = document.createElement('button');
+      b.className = 'cg-opt'; b.textContent = text;
+      if (reveal) {
+        b.disabled = true;
+        if (i === g.correct) b.classList.add('correct');
+        if (g.picks && g.picks[me.id] === i) { b.classList.add('mine'); if (i !== g.correct) b.classList.add('wrong'); }
+      } else {
+        b.disabled = iAnswered;
+        b.onclick = () => socket.emit('game:answer', i);
+      }
+      opts.appendChild(b);
+    });
+    body.append(q, opts);
+  }
+
+  const foot = document.createElement('div'); foot.className = 'cg-foot';
+  const scores = document.createElement('div'); scores.className = 'cg-scores';
+  const entries = (g.roster || []).map((r) => ({ name: r.name, pts: (g.scores && g.scores[r.id]) || 0 })).sort((a, b) => b.pts - a.pts);
+  for (const e of entries) {
+    const s = document.createElement('div'); s.className = 'cg-score';
+    s.innerHTML = `${e.name} <span class="pts">${e.pts}</span>`;
+    scores.appendChild(s);
+  }
+  foot.appendChild(scores);
+
+  if (g.phase === 'question') {
+    const w = document.createElement('div'); w.className = 'cg-waiting';
+    const total = (g.roster || []).length, ans = g.answered.length;
+    w.textContent = g.answered.includes(me.id) ? `Esperando al resto… (${ans}/${total})` : `Elige tu respuesta (${ans}/${total})`;
+    foot.appendChild(w);
+  } else {
+    const btn = document.createElement('button'); btn.className = 'cg-next';
+    btn.textContent = g.phase === 'done' ? 'Jugar otra vez' : 'Siguiente pregunta';
+    btn.onclick = () => socket.emit('game:next');
+    foot.appendChild(btn);
+  }
+  body.appendChild(foot);
 }
 
 // ---------- cámara / micro ----------
