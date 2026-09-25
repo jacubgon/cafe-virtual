@@ -137,7 +137,7 @@ export class World {
 
   _renderAv(p) {
     renderAvatar(p.innerEl, {
-      color: p.color, skin: p.body, hair: p.body, vr: p.vr,
+      color: p.color, skin: p.skin, hair: p.hair, hairStyle: p.hairStyle, vr: p.vr,
       dir: p.dir, phase: p.phase, scale: p.s,
     });
   }

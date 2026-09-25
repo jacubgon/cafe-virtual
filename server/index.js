@@ -90,11 +90,14 @@ const players = new Map();
 // Punto de aparición: pasillo/plaza, despejado (encima de la fuente central).
 const SPAWN = { x: 590, y: 240 };
 
+const clampInt = (v, max) => (Number.isInteger(v) ? Math.max(0, Math.min(max, v)) : 0);
 function sanitize(p = {}) {
   return {
     name: String(p.name || 'Invitado').slice(0, 24).trim() || 'Invitado',
-    body: Number.isInteger(p.body) ? Math.max(0, Math.min(3, p.body)) : 0,
-    color: Number.isInteger(p.color) ? Math.max(0, Math.min(5, p.color)) : 0,
+    skin: clampInt(p.skin, 4),
+    hair: clampInt(p.hair, 4),
+    hairStyle: clampInt(p.hairStyle, 3),
+    color: clampInt(p.color, 5),
     vr: !!p.vr,
   };
 }

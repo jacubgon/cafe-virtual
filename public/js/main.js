@@ -2,7 +2,7 @@
 
 import { World } from './world.js';
 import { RTC } from './rtc.js';
-import { renderAvatar, PALETTE } from './avatar.js';
+import { renderAvatar, PALETTE, SKIN, HAIRS, HAIR_STYLES } from './avatar.js';
 
 const PHRASES = ['Hola', 'Voy por café', 'Me apunto', 'Ahora vuelvo'];
 const EMOTES = ['👋', '❤️', '😂', '👍', '🎉', '☕'];
@@ -26,8 +26,8 @@ function randomSpot(zone) {
   return { x: a.x[0] + Math.random() * (a.x[1] - a.x[0]), y: a.y[0] + Math.random() * (a.y[1] - a.y[0]) };
 }
 
-// Estado del onboarding.
-const sel = { name: '', body: 0, color: 0, vr: true };
+// Estado del onboarding (avatar completo).
+const sel = { name: '', skin: 0, hair: 0, hairStyle: 0, color: 0, vr: true };
 
 let socket, world, rtc, localStream;
 let micOn = true, camOn = true;
@@ -47,7 +47,9 @@ const speakingIds = new Set();       // ids que están hablando ahora mismo
 // ---------- refs ----------
 const $ = (id) => document.getElementById(id);
 const nameInput = $('name-input');
-const bodyChoices = $('body-choices');
+const hairChoices = $('hair-choices');
+const skinChoices = $('skin-choices');
+const hairColorChoices = $('haircolor-choices');
 const colorChoices = $('color-choices');
 const vrSwitch = $('vr-switch');
 const previewAvatar = $('preview-avatar');
@@ -61,35 +63,45 @@ function renderAvatarInBox(el, opts, boxH) {
   if (el.__fig) el.__fig.style.top = (boxH * 0.92 - 48) + 'px';
 }
 
-function buildBodyChoices() {
-  bodyChoices.innerHTML = '';
-  for (let i = 0; i < 4; i++) {
-    const btn = document.createElement('button');
-    btn.className = 'body-btn' + (sel.body === i ? ' on' : '');
-    btn.onclick = () => { sel.body = i; refreshOnboarding(); };
-    const inner = document.createElement('div');
-    inner.style.cssText = 'position:absolute;inset:0;';
-    renderAvatarInBox(inner, { color: sel.color, skin: i, hair: i, vr: false, scale: 1.1, dir: 'down', phase: 0 }, 74);
-    btn.appendChild(inner);
-    bodyChoices.appendChild(btn);
-  }
+// Opciones actuales del avatar (base para los previews de los selectores).
+function avOpts(extra) {
+  return { color: sel.color, skin: sel.skin, hair: sel.hair, hairStyle: sel.hairStyle, vr: false, dir: 'down', phase: 0, ...extra };
 }
 
-function buildColorChoices() {
-  colorChoices.innerHTML = '';
-  PALETTE.forEach((c, i) => {
+// Peinado: mini-avatares mostrando cada estilo.
+function buildHairChoices() {
+  hairChoices.innerHTML = '';
+  HAIR_STYLES.forEach((name, i) => {
     const btn = document.createElement('button');
-    btn.className = 'color-btn' + (sel.color === i ? ' on' : '');
+    btn.className = 'body-btn' + (sel.hairStyle === i ? ' on' : '');
+    btn.title = name;
+    btn.onclick = () => { sel.hairStyle = i; refreshOnboarding(); };
+    const inner = document.createElement('div');
+    inner.style.cssText = 'position:absolute;inset:0;';
+    renderAvatarInBox(inner, avOpts({ hairStyle: i, scale: 1.1 }), 74);
+    btn.appendChild(inner);
+    hairChoices.appendChild(btn);
+  });
+}
+
+// Fila de swatches de color reutilizable.
+function buildSwatchRow(box, colors, current, onPick) {
+  box.innerHTML = '';
+  colors.forEach((c, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'color-btn' + (current === i ? ' on' : '');
     btn.style.background = c;
-    btn.onclick = () => { sel.color = i; refreshOnboarding(); };
-    colorChoices.appendChild(btn);
+    btn.onclick = () => onPick(i);
+    box.appendChild(btn);
   });
 }
 
 function refreshOnboarding() {
-  buildBodyChoices();
-  buildColorChoices();
-  renderAvatarInBox(previewAvatar, { color: sel.color, skin: sel.body, hair: sel.body, vr: sel.vr, scale: 2.3, dir: 'down', phase: 0 }, 140);
+  buildHairChoices();
+  buildSwatchRow(skinChoices, SKIN, sel.skin, (i) => { sel.skin = i; refreshOnboarding(); });
+  buildSwatchRow(hairColorChoices, HAIRS, sel.hair, (i) => { sel.hair = i; refreshOnboarding(); });
+  buildSwatchRow(colorChoices, PALETTE, sel.color, (i) => { sel.color = i; refreshOnboarding(); });
+  renderAvatarInBox(previewAvatar, { color: sel.color, skin: sel.skin, hair: sel.hair, hairStyle: sel.hairStyle, vr: sel.vr, scale: 2.3, dir: 'down', phase: 0 }, 140);
   previewName.textContent = (nameInput.value.trim() || 'Invitado');
 }
 
@@ -98,7 +110,7 @@ nameInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') enter(); }
 vrSwitch.addEventListener('click', () => {
   sel.vr = !sel.vr;
   vrSwitch.classList.toggle('on', sel.vr);
-  renderAvatarInBox(previewAvatar, { color: sel.color, skin: sel.body, hair: sel.body, vr: sel.vr, scale: 2.3, dir: 'down', phase: 0 }, 140);
+  refreshOnboarding();
 });
 enterBtn.addEventListener('click', enter);
 
@@ -107,7 +119,9 @@ const PROFILE_KEY = 'cafevirtual.profile';
 try {
   const saved = JSON.parse(localStorage.getItem(PROFILE_KEY) || 'null');
   if (saved) {
-    sel.body = Number.isInteger(saved.body) ? saved.body : 0;
+    sel.skin = Number.isInteger(saved.skin) ? saved.skin : 0;
+    sel.hair = Number.isInteger(saved.hair) ? saved.hair : 0;
+    sel.hairStyle = Number.isInteger(saved.hairStyle) ? saved.hairStyle : 0;
     sel.color = Number.isInteger(saved.color) ? saved.color : 0;
     sel.vr = typeof saved.vr === 'boolean' ? saved.vr : true;
     if (saved.name) nameInput.value = saved.name;
@@ -121,7 +135,7 @@ nameInput.focus();
 // ══════════ ENTRAR ══════════
 async function enter() {
   sel.name = nameInput.value.trim() || 'Invitado';
-  try { localStorage.setItem(PROFILE_KEY, JSON.stringify({ name: sel.name, body: sel.body, color: sel.color, vr: sel.vr })); } catch {}
+  try { localStorage.setItem(PROFILE_KEY, JSON.stringify({ name: sel.name, skin: sel.skin, hair: sel.hair, hairStyle: sel.hairStyle, color: sel.color, vr: sel.vr })); } catch {}
   enterBtn.disabled = true;
   enterBtn.textContent = 'Pidiendo cámara…';
 
@@ -138,7 +152,7 @@ async function enter() {
   }
 
   socket = io();
-  socket.on('connect', () => socket.emit('join', { name: sel.name, body: sel.body, color: sel.color, vr: sel.vr }));
+  socket.on('connect', () => socket.emit('join', { name: sel.name, skin: sel.skin, hair: sel.hair, hairStyle: sel.hairStyle, color: sel.color, vr: sel.vr }));
   socket.on('welcome', ({ you, players }) => startOffice(you, players));
 }
 

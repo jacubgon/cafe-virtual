@@ -70,6 +70,8 @@ html, body {
 #name-input:focus { border-color: var(--dvr-blue-action, #2F76F7); background: #fff; }
 
 .swatch-row { display: flex; flex-wrap: wrap; gap: 12px; }
+.ob-colors { display: flex; gap: 20px; }
+.ob-colors .field { flex: 1; }
 .body-btn {
   position: relative; width: 62px; height: 74px; border-radius: 12px;
   border: 1px solid var(--border-default, #E4E6E8); background: #fff; cursor: pointer; padding: 0;
